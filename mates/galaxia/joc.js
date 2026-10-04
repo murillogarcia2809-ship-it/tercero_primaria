@@ -2,11 +2,12 @@
 (function () {
   'use strict';
   const { U, sfx, say, stopSay, story, modal, confetti, floatMsg, keypad, choices, quiz, store, starsFor } = Eloi;
-  const { numCat, comprovaText, DICCIONARI } = NombresCa;
+  const { numCat, comprovaText, DICCIONARI, UNI, DES, fins100, trossos, errades, erradesText } = NombresCa;
 
   const PLAYER = 'Eloi';
   const SAVE = 'galaxia';
   const app = document.getElementById('app');
+  let guide = () => Promise.resolve(); // missatge d'en Bit a la pantalla actual
 
   // ---------- Dades ----------
   const COLS = [
@@ -94,6 +95,23 @@
   }
   const colsOf = (n) => COLS.slice(5 - String(n).length);
 
+  // ---------- Trossos de colors per escriure en lletres ----------
+  const TCOL = { m: '#b388ff', c: '#4fc3f7', r: '#69f0ae' };
+  const TNOM = { m: 'milers', c: 'centenes', r: 'desenes i unitats' };
+  const tchip = (k, txt) => `<span class="chip" style="--c:${TCOL[k]}">${txt}</span>`;
+  // Número de 2 xifres (desena entre dmin i dmax) que no sigui rodó: 47, 23…
+  const gen2 = (dmin, dmax) => U.rand(dmin, dmax) * 10 + U.rand(1, 9);
+  // Número de 3 xifres, a vegades amb un zero
+  const gen3 = () => U.rand(1, 9) * 100 + (Math.random() < 0.25 ? U.rand(1, 9) : U.rand(10, 99));
+  // Número pintat per trossos: milers | centenes | desenes i unitats
+  function partsHTML(n) {
+    const s = String(n), L = s.length, g = [];
+    if (L > 3) g.push({ k: 'm', d: s.slice(0, L - 3) });
+    if (L >= 3) g.push({ k: 'c', d: s[L - 3] });
+    g.push({ k: 'r', d: L >= 2 ? s.slice(-2) : s });
+    return `<div class="parts">${g.map((x, i) => `${x.k === 'c' && i > 0 ? '<span class="dotsep">.</span>' : ''}<div class="grp ${+x.d === 0 ? 'zero' : ''}" data-k="${x.k}" style="--g:${TCOL[x.k]}"><span>${x.d}</span><small>${TNOM[x.k]}</small></div>`).join('')}</div>`;
+  }
+
   // ---------- Planetes ----------
   const DIG = [3, 4, 4, 5, 5, 5];
   const ex = 34072;
@@ -117,13 +135,55 @@
       gen: (i) => ({ type: 'compon', n: genNum(DIG[i]), mode: i % 2 ? 'valors' : 'unitats', shuffle: i >= 3 }),
     },
     {
-      id: 'paraules', name: 'Planeta Paraules', emoji: '📜', c1: '#a1ffce', c2: '#11998e', skill: 'Escriure en lletres',
+      id: 'petita', name: 'Lluna Petita', emoji: '🌙', c1: '#fff59d', c2: '#f9a825', skill: 'Lletres fins al 99',
       intro: [
-        { who: BIT, name: 'Bit', text: 'Al <b>Planeta Paraules</b> els números s\'escriuen amb lletres, com als llibres antics. 📜' },
-        { who: BIT, name: 'Bit', text: '<b>2.345</b> s\'escriu: <i>dos mil tres-cents quaranta-cinc</i>.' },
-        { who: BIT, name: 'Bit', text: 'Trucs: les desenes i unitats van amb guionet: <i>quaranta-cinc</i>. Del 21 al 29 porten <b>-i-</b>: <i>vint-i-tres</i>. I les centenes també: <i>tres-cents</i>. Si dubtes, toca el llibre 📖!' },
+        { who: BIT, name: 'Bit', text: 'Benvingut a la <b>Lluna Petita</b>! 🌙 Aquí aprendrem a escriure els números en lletres, pas a pas. Comencem pels petits!' },
+        { who: BIT, name: 'Bit', text: `Del 0 al 20, cada número té el seu <b>nom propi</b>, i te l'has d'aprendre:<br><i>u, dos, tres, quatre, cinc, sis, set, vuit, nou, deu, onze, dotze, tretze, catorze, quinze, setze, disset, divuit, dinou, vint</i>.` },
+        { who: BIT, name: 'Bit', text: `Les <b>desenes</b> també tenen nom:<br><i>deu, vint, trenta, quaranta, cinquanta, seixanta, setanta, vuitanta, noranta</i>.` },
+        { who: BIT, name: 'Bit', text: `Per fer els altres, ajuntem la <b>desena</b> i la <b>unitat</b> amb un guionet:<br>${tchip('r', 'quaranta')} + <b>-</b> + ${tchip('r', 'cinc')} = <b>quaranta-cinc</b> (45)` },
+        { who: BIT, name: 'Bit', text: `Truc especial: <b>només amb el vint</b> posem <b>-i-</b>:<br><b>vint-i-u</b>, <b>vint-i-dos</b>, <b>vint-i-tres</b>… <b>vint-i-nou</b>.<br>Però 31 és <b>trenta-u</b>, sense la i!` },
       ],
-      gen: (i) => ({ type: 'escriu', n: genNum([3, 4, 5, 3, 4, 4][i]), mode: i < 3 ? 'fitxes' : 'teclat' }),
+      gen: (i) => {
+        if (i === 0) return { type: 'triaText', n: U.rand(11, 99) };
+        if (i === 1) return { type: 'peces', n: gen2(3, 9) };
+        if (i === 2) return { type: 'peces', n: gen2(2, 2) };
+        if (i === 3) return { type: 'triaText', n: gen2(2, 9) };
+        if (i === 4) return { type: 'peces', n: gen2(2, 9) };
+        return { type: 'escriu', n: gen2(2, 9), mode: 'teclat' };
+      },
+    },
+    {
+      id: 'centenes', name: 'Lluna de les Centenes', emoji: '🌕', c1: '#e0f7fa', c2: '#4fc3f7', skill: 'Lletres fins al 999',
+      intro: [
+        { who: BIT, name: 'Bit', text: 'Som a la <b>Lluna de les Centenes</b>! 🌕 Ara toca escriure números de tres xifres.' },
+        { who: BIT, name: 'Bit', text: `Les centenes: 100 és <b>cent</b>. Després: <b>dos-cents</b>, <b>tres-cents</b>, <b>quatre-cents</b>… fins a <b>nou-cents</b>.<br>Porten <b>guionet</b> i acaben en <b>-cents</b>!` },
+        { who: BIT, name: 'Bit', text: `El gran truc: <b>partim el número en trossos</b> i diem cada tros.<br>345 → ${tchip('c', '3')} ${tchip('r', '45')}<br>${tchip('c', 'tres-cents')} ${tchip('r', 'quaranta-cinc')}` },
+        { who: BIT, name: 'Bit', text: 'Entre els trossos hi posem un <b>espai</b>, no un guionet: <b>tres-cents quaranta-cinc</b>.<br>I si un tros val zero, no es diu: 407 → <b>quatre-cents set</b>.' },
+      ],
+      gen: (i) => {
+        if (i === 0) return { type: 'triaText', n: U.rand(2, 9) * 100 };
+        if (i === 3) return { type: 'guiat', n: U.rand(1, 9) * 100 + U.rand(1, 9) };
+        if (i === 2) return { type: 'triaText', n: gen3() };
+        if (i === 5) return { type: 'escriu', n: gen3(), mode: 'fitxes' };
+        return { type: 'guiat', n: gen3() };
+      },
+    },
+    {
+      id: 'paraules', name: 'Planeta Paraules', emoji: '📜', c1: '#a1ffce', c2: '#11998e', skill: 'Lletres amb milers',
+      intro: [
+        { who: BIT, name: 'Bit', text: 'Al <b>Planeta Paraules</b> hi ha els números més grans, amb <b>milers</b>! 📜 Però tranquil: fem servir el mateix truc dels trossos.' },
+        { who: BIT, name: 'Bit', text: `Partim el número pel <b>punt</b>. El tros de l'esquerra són els milers i hi afegim la paraula <b>mil</b>:<br>23.456 → ${tchip('m', '23')} . ${tchip('c', '4')} ${tchip('r', '56')}<br>${tchip('m', 'vint-i-tres mil')} ${tchip('c', 'quatre-cents')} ${tchip('r', 'cinquanta-sis')}` },
+        { who: BIT, name: 'Bit', text: 'Compte amb dos paranys:<br>• 1.000 és només <b>mil</b> (no "un mil").<br>• 21.000 és <b>vint-i-un mil</b>: davant de mil diem <b>un</b>, no u.' },
+        { who: BIT, name: 'Bit', text: 'Si dubtes, toca el llibre 📖 i hi trobaràs tots els noms. Som-hi!' },
+      ],
+      gen: (i) => {
+        if (i === 0) return { type: 'guiat', n: genNum(4) };
+        if (i === 1) return { type: 'guiat', n: 1000 + U.rand(1, 999) };
+        if (i === 2) return { type: 'triaText', n: genNum(4) };
+        if (i === 3) return { type: 'guiat', n: genNum(5) };
+        if (i === 4) return { type: 'escriu', n: genNum(4), mode: 'fitxes' };
+        return { type: 'escriu', n: genNum(5), mode: 'fitxes' };
+      },
     },
     {
       id: 'eco', name: 'Planeta Eco', emoji: '🔊', c1: '#89f7fe', c2: '#2f80ed', skill: 'Llegir números',
@@ -154,7 +214,7 @@
     }
   }
   function bossQuestion() {
-    const t = U.pick(['descompon', 'triaDesc', 'compon', 'escriu', 'llegeix', 'valorXifra', 'quinaXifra', 'quinNumero']);
+    const t = U.pick(['descompon', 'triaDesc', 'compon', 'escriu', 'llegeix', 'valorXifra', 'quinaXifra', 'quinNumero', 'triaText']);
     const dg = U.pick([4, 5, 5]);
     if (t === 'valorXifra' || t === 'quinaXifra' || t === 'quinNumero') return genValor(t, dg);
     if (t === 'compon') return { type: t, n: genNum(dg), mode: U.pick(['unitats', 'valors']), shuffle: true };
@@ -173,15 +233,33 @@
       case 'valorXifra': return 'Quant val la xifra groga?';
       case 'quinaXifra': return `Quina xifra hi ha a les <b>${q.col.nom} (${q.col.k})</b>?`;
       case 'quinNumero': return 'Quin número és?';
+      case 'triaText': return 'Com s\'escriu aquest número en lletres? Tria la resposta correcta.';
+      case 'peces': return 'Construeix el número amb les peces: primer la desena, després l\'enganxada i al final la unitat.';
+      case 'guiat': return 'Escrivim el número a trossos! Tria com es diu cada tros de color.';
     }
     return '';
+  }
+  // Pista per a les desenes i unitats (fins al 99)
+  function pistaResta(r) {
+    const d = Math.floor(r / 10), u = r % 10;
+    if (r <= 20) return 'Del 0 al 20 cada número té el seu nom propi. Si dubtes, mira el llibre 📖.';
+    if (!u) return 'Els números rodons només porten el nom de la desena: trenta, quaranta, cinquanta…';
+    if (d === 2) return 'Recorda: <b>només amb el vint</b> posem <b>-i-</b>: vint-i-u, vint-i-dos, vint-i-tres…';
+    return `Recorda: desena + <b>guionet</b> + unitat, sense la i. Com ara <b>${DES[d]}-${UNI[u]}</b>.`;
+  }
+  function pistaTros(p) {
+    if (p.k === 'm') return p.v === 1 ? 'Compte! 1.000 es diu només <b>mil</b>, sense "un".' : 'Diem el número de l\'esquerra i després la paraula <b>mil</b>, separada amb un espai. Davant de mil diem <b>un</b>, no u.';
+    if (p.k === 'c') return p.v === 1 ? '100 es diu només <b>cent</b>.' : 'Les centenes porten <b>guionet</b> i acaben en <b>-cents</b>: dos-cents, tres-cents…';
+    return pistaResta(p.v);
   }
   function hint(q) {
     switch (q.type) {
       case 'descompon': return 'Gairebé! Les caselles vermelles no són correctes. Torna-ho a provar 💪';
       case 'compon': return 'Gairebé! Recorda: si falta una casa, hi va un <b>0</b>. Torna-ho a provar 💪';
       case 'llegeix': return 'Gairebé! Fixa\'t bé en els milers i en els zeros. Torna-ho a provar 💪';
-      case 'escriu': return 'Gairebé! Comprova l\'ordre: primer els milers, després les centenes i al final les desenes i unitats.';
+      case 'escriu': return q.n < 100 ? pistaResta(q.n) : 'Pista: mira els trossos de colors. Primer els milers, després les centenes i al final la resta.';
+      case 'peces': return pistaResta(q.n);
+      case 'triaText': return 'Fixa\'t bé en els guionets i en els noms. Parteix el número en trossos i comprova cada tros!';
       default: return 'Ui, aquesta no és! Torna-ho a provar 💪';
     }
   }
@@ -262,7 +340,15 @@
 
     escriu(q, ctx) {
       const text = numCat(q.n);
-      ctx.area.appendChild(U.h(`<div class="big-num">${U.fmt(q.n)}</div>`));
+      let numEl = U.h(`<div class="big-num">${U.fmt(q.n)}</div>`);
+      ctx.area.appendChild(numEl);
+      // Pista: el número es parteix en trossos de colors
+      const pista = () => {
+        if (q.n < 100 || !numEl.classList.contains('big-num')) return;
+        const p = U.h(partsHTML(q.n));
+        numEl.replaceWith(p);
+        numEl = p;
+      };
       const showSolution = () => {
         ctx.area.appendChild(U.h(`<div class="solution">${text}</div>`));
         say(text);
@@ -279,7 +365,7 @@
             if (r === 'guions') note = `Molt bé! Només et falten els guionets: <b>${text}</b>`;
             return r !== 'no';
           },
-          bad: () => U.shake(inp),
+          bad: () => { U.shake(inp); pista(); },
           good() {
             inp.disabled = true; inp.classList.add('right');
             if (note) ctx.area.appendChild(U.h(`<div class="note">${note}</div>`));
@@ -314,7 +400,7 @@
           const got = [...answer.children].map((e) => e.dataset.w);
           return got.length ? got.join(' ') === text : null;
         },
-        bad: () => U.shake(answer),
+        bad: () => { U.shake(answer); pista(); },
         good() { locked = true; answer.style.background = '#b9f6ca'; say(text); },
         reveal() { locked = true; showSolution(); },
       };
@@ -357,6 +443,117 @@
       return choices(ctx, opts, { cls: 'digits' });
     },
 
+    // Tria l'escriptura correcta entre errors típics
+    triaText(q, ctx) {
+      const text = numCat(q.n);
+      ctx.area.appendChild(U.h(`<div class="big-num">${U.fmt(q.n)}</div>`));
+      const dolents = U.shuffle(erradesText(q.n));
+      for (let k = 1; dolents.length < 3; k++) { const alt = numCat(q.n + k); if (!dolents.includes(alt) && alt !== text) dolents.push(alt); }
+      const opts = U.shuffle([text, ...dolents.slice(0, 3)]).map((t) => ({ html: t, ok: t === text }));
+      const R = choices(ctx, opts, { cls: 'one-col' });
+      const good = R.good, reveal = R.reveal;
+      R.good = () => { good(); say(text); };
+      R.reveal = () => { reveal(); say(text); };
+      return R;
+    },
+
+    // Construeix un número de 2 xifres amb peces: desena + enganxada + unitat
+    peces(q, ctx) {
+      const r = q.n, d = Math.floor(r / 10), u = r % 10;
+      const text = numCat(r);
+      const want = [DES[d], d === 2 ? '-i-' : '-', UNI[u]];
+      const extra = u >= 2 && u !== d ? DES[u] : UNI[d];
+      const isCon = (w) => w === '-' || w === '-i-';
+      ctx.area.appendChild(U.h(`<div class="big-num">${r}</div>`));
+      const answer = U.h('<div class="tiles-answer"></div>');
+      const preview = U.h('<div class="preview"></div>');
+      const bank = U.h('<div class="tiles-bank"></div>');
+      let locked = false;
+      const upd = () => {
+        const got = [...answer.children].map((e) => e.dataset.w);
+        preview.textContent = got.reduce((acc, w, i) => acc + (i && !isCon(w) && !isCon(got[i - 1]) ? ' ' : '') + w, '');
+      };
+      U.shuffle([DES[d], UNI[u], '-', '-i-', extra]).forEach((w) => {
+        const t = U.h(`<button class="wtile ${isCon(w) ? 'con' : ''}" data-w="${w}">${w}</button>`);
+        t.onclick = () => {
+          if (locked) return;
+          sfx.tick();
+          (t.parentNode === bank ? answer : bank).appendChild(t);
+          upd();
+        };
+        bank.appendChild(t);
+      });
+      ctx.area.appendChild(answer);
+      ctx.area.appendChild(preview);
+      ctx.area.appendChild(bank);
+      return {
+        check() {
+          const got = [...answer.children].map((e) => e.dataset.w);
+          if (!got.length) return null;
+          return got.join('|') === want.join('|');
+        },
+        bad: () => U.shake(answer),
+        good() { locked = true; answer.style.background = '#b9f6ca'; say(text); },
+        reveal() { locked = true; ctx.area.appendChild(U.h(`<div class="solution">${text}</div>`)); say(text); },
+      };
+    },
+
+    // Escriu un número a trossos, un tros cada vegada (mode guiat)
+    guiat(q, ctx) {
+      const parts = trossos(q.n);
+      const numEl = U.h(partsHTML(q.n));
+      const built = U.h(`<div class="built">${parts.map((p) => `<span class="slot-t" style="--g:${TCOL[p.k]}">?</span>`).join('')}</div>`);
+      const stepQ = U.h('<div class="step-q"></div>');
+      const opts = U.h('<div class="choices one-col"></div>');
+      ctx.area.append(numEl, built, stepQ, opts);
+      const slots = [...built.children];
+      let step = 0, errors = 0;
+      const nomTros = (p) => (p.k === 'm' ? `el tros dels <b>milers</b>: <b>${p.v}</b> mil` : p.k === 'c' ? `les <b>centenes</b>: el ${p.v} val <b>${p.v * 100}</b>` : `el final: <b>${p.v}</b>`);
+      function show() {
+        const p = parts[step];
+        numEl.querySelectorAll('.grp').forEach((g) => g.classList.toggle('on', g.dataset.k === p.k));
+        stepQ.innerHTML = `${step === 0 ? 'Primer' : step === parts.length - 1 ? 'I ara' : 'Després'}, ${nomTros(p)}. Com es diu?`;
+        const dolents = U.shuffle(errades(p));
+        for (let k = 2; dolents.length < 2; k++) { const alt = fins100(Math.min(99, p.v + k), false); if (alt !== p.text && !dolents.includes(alt)) dolents.push(alt); }
+        opts.innerHTML = '';
+        U.shuffle([p.text, ...dolents.slice(0, 2)]).forEach((t) => {
+          const b = U.h(`<button class="choice">${t}</button>`);
+          b.onclick = async () => {
+            if (b.disabled) return;
+            if (t !== p.text) {
+              errors++; sfx.bad();
+              b.classList.add('wrong'); b.disabled = true; U.shake(b);
+              guide(pistaTros(p));
+              return;
+            }
+            sfx.tick();
+            opts.querySelectorAll('.choice').forEach((x) => { x.disabled = true; });
+            b.classList.add('right');
+            slots[step].textContent = p.text;
+            slots[step].classList.add('done');
+            say(p.text);
+            step++;
+            await U.sleep(700);
+            if (step < parts.length) show();
+            else {
+              numEl.querySelectorAll('.grp').forEach((g) => g.classList.remove('on'));
+              stepQ.innerHTML = `<b>${U.fmt(q.n)}</b> = <b>${numCat(q.n)}</b>`;
+              opts.innerHTML = '';
+              ctx.submit();
+            }
+          };
+          opts.appendChild(b);
+        });
+      }
+      show();
+      return {
+        auto: true,
+        extraMistakes: () => errors,
+        check: () => (step >= parts.length ? true : null),
+        good() { built.classList.add('right'); say(numCat(q.n)); },
+      };
+    },
+
     quinNumero(q, ctx) {
       const cs = colsOf(q.n);
       const parts = cs.map((c) => chip(c, `${dig(q.n, c.v)} ${c.k}`));
@@ -370,7 +567,8 @@
   // ---------- Progrés ----------
   const prog = () => store.get(SAVE, { stars: {}, intro: false, seen: {} });
   const saveProg = (p) => store.set(SAVE, p);
-  const unlocked = (i, p) => i === 0 || (p.stars[(i < PLANETS.length ? PLANETS[i - 1] : PLANETS[PLANETS.length - 1]).id] || 0) > 0;
+  // Un planeta s'obre si l'anterior té estrelles, o si ja en té ell mateix (així no es perd el progrés en afegir planetes nous)
+  const unlocked = (i, p) => i === 0 || (p.stars[(i < PLANETS.length ? PLANETS[i - 1] : PLANETS[PLANETS.length - 1]).id] || 0) > 0 || (p.stars[(i < PLANETS.length ? PLANETS[i] : BOSS).id] || 0) > 0;
   const totalStars = (p) => Object.values(p.stars).reduce((a, b) => a + b, 0);
 
   // ---------- Pantalla d'inici ----------
@@ -395,7 +593,7 @@
       { who: BIT, name: 'Bit', text: `Hola, Capità <b>${PLAYER}</b>! Sóc en <b>Bit</b>, el robot de la teva nau espacial. 🚀` },
       { who: BIT, name: 'Bit', text: 'Tenim un problema GRAN: el malvat <b>Capità Zero</b> ha robat els números de la galàxia! Sense números, les naus es perden i els planetes s\'apaguen.' },
       { who: ZERO, name: 'Capità Zero', text: 'Ha, ha, ha! Ara tots els números són meus! Ningú no sabrà descompondre\'ls ni escriure\'ls mai més! 🏴‍☠️' },
-      { who: BIT, name: 'Bit', text: 'Hem de visitar 5 planetes i guanyar els seus <b>cristalls</b> 💎. Amb tots els cristalls, el nostre làser podrà vèncer el Capità Zero!' },
+      { who: BIT, name: 'Bit', text: `Hem de visitar ${PLANETS.length} planetes i llunes i guanyar els seus <b>cristalls</b> 💎. Amb tots els cristalls, el nostre làser podrà vèncer el Capità Zero!` },
       { who: BIT, name: 'Bit', text: 'A cada planeta hi ha 6 reptes. Si t\'equivoques, tranquil: tens dos intents i jo t\'ajudaré. Endavant, Capità!', btn: 'A l\'espai! 🚀' },
     ]);
   }
@@ -458,6 +656,7 @@
     };
     app.querySelector('#rep').onclick = () => say(current);
     app.querySelector('#dic').onclick = showDictionary;
+    guide = setGuide;
     return { area: app.querySelector('.area'), button: app.querySelector('#chk'), dots: app.querySelector('.dots'), setGuide, help: app.querySelector('#help') };
   }
 
@@ -484,11 +683,12 @@
       questions: Array.from({ length: N }, (_, i) => pl.gen(i)),
       render: makeRender(S),
       progress: (i) => dots.forEach((d, k) => d.classList.toggle('cur', k === i)),
-      onCorrect: (q, { attempts }) => {
+      onCorrect: (q, { attempts, R }) => {
         sfx.ok();
         const w = U.pick(PRAISE);
+        const errs = attempts + (R.extraMistakes ? R.extraMistakes() : 0);
         floatMsg(`${w} ${U.pick(EMO)}`);
-        S.setGuide(`${w} ${attempts ? '' : 'A la primera! '}${U.pick(EMO)}`, !['escriu'].includes(q.type));
+        S.setGuide(`${w} ${errs ? '' : 'A la primera! '}${U.pick(EMO)}`,!['escriu', 'guiat', 'peces', 'triaText'].includes(q.type));
       },
       onWrong: (q, { giveUp }) => {
         sfx.bad();
@@ -584,7 +784,7 @@
       <p style="font-size:1.8rem;font-weight:700">Capità dels Números</p>
       <p>a</p><div class="name">${PLAYER}</div>
       <p style="font-size:1.15rem">per haver derrotat el Capità Zero i salvat la Galàxia Numèrica,<br>dominant les DM, UM, C, D i U.</p>
-      <p style="font-size:1.6rem">⭐ ${totalStars(p)} estrelles &nbsp; 💎 5 cristalls</p>
+      <p style="font-size:1.6rem">⭐ ${totalStars(p)} estrelles &nbsp; 💎 ${PLANETS.length} cristalls</p>
       <p>${avui}</p>
       <div class="no-print" style="display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:16px">
         <button class="btn blue" id="print">🖨️ Imprimir</button><button class="btn" id="map">Mapa 🌌</button></div></div>`;
@@ -597,7 +797,12 @@
     sfx.click();
     modal({
       icon: '📖', title: 'Diccionari de números',
-      html: `<div class="dict">${DICCIONARI.map(([n, t]) => `<div><b>${U.fmt(n)}</b> ${t}</div>`).join('')}</div>`,
+      html: `<div class="rules">
+        • Desena + <b>guionet</b> + unitat: <b>quaranta-cinc</b><br>
+        • Només amb el vint: <b>vint-i-tres</b><br>
+        • Centenes amb guionet: <b>dos-cents</b>, <b>tres-cents</b>…<br>
+        • Entre trossos, un <b>espai</b>: <b>dos mil tres-cents quaranta-cinc</b></div>
+        <div class="dict">${DICCIONARI.map(([n, t]) => `<div><b>${U.fmt(n)}</b> ${t}</div>`).join('')}</div>`,
       buttons: [{ label: 'Tancar', value: 'ok' }],
     });
   }

@@ -91,6 +91,29 @@
   .txt-input { width: 100%; max-width: 760px; font-size: 1.7rem; padding: 14px 18px; border-radius: 18px; border: none; border-bottom: 5px solid #a9aec9; outline: none; color: var(--ink); text-align: center; -webkit-user-select: text; user-select: text; }
   .txt-input.right { background: #b9f6ca; }
 
+  /* número partit en trossos de colors */
+  .parts { display: flex; align-items: flex-start; justify-content: center; gap: 6px; font-size: clamp(2.8rem, 12vw, 4.6rem); font-weight: 700; line-height: 1.05; }
+  .grp { display: flex; flex-direction: column; align-items: center; color: var(--g); padding: 2px 8px 6px; border-radius: 16px; transition: background .2s; }
+  .grp small { font-size: .85rem; color: #fff; opacity: .9; font-weight: 600; border-top: 5px solid var(--g); padding-top: 3px; width: 100%; text-align: center; line-height: 1.1; white-space: nowrap; }
+  .grp.on { background: rgba(255,255,255,.14); box-shadow: 0 0 0 3px var(--g); animation: pulse 1.4s infinite; }
+  .grp.zero { opacity: .35; }
+  .dotsep { color: #fff; opacity: .8; }
+  .built { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; align-items: center; background: rgba(255,255,255,.95); border-radius: 18px; padding: 10px; min-height: 64px; width: 100%; max-width: 760px; }
+  .built.right { background: #b9f6ca; }
+  .slot-t { padding: 6px 14px; border-radius: 12px; border: 3px dashed var(--g); color: #999; font-size: 1.4rem; font-weight: 600; min-width: 80px; text-align: center; }
+  .slot-t.done { border-style: solid; background: var(--g); color: #222; animation: pop .35s both; }
+  .step-q { font-size: 1.35rem; text-align: center; line-height: 1.4; }
+  .choices.one-col { grid-template-columns: 1fr; max-width: 520px; }
+  .preview { font-size: 1.8rem; font-weight: 700; min-height: 1.3em; color: var(--gold); text-align: center; }
+  .wtile.con { background: linear-gradient(#fff3c4, #ffd23f); color: #4a2a00; box-shadow: 0 5px 0 #c9971a; min-width: 56px; }
+  @media (max-width: 500px) {
+    .grp { padding: 2px 4px 4px; } .grp small { font-size: .7rem; }
+    .slot-t { font-size: 1.15rem; min-width: 60px; padding: 4px 10px; }
+    .step-q { font-size: 1.15rem; } .preview { font-size: 1.5rem; }
+    .wtile { font-size: 1.25rem; padding: 8px 12px; }
+  }
+  .rules { text-align: left; background: #f3ecff; border-radius: 14px; padding: 10px 14px; margin-bottom: 10px; font-size: 1rem; line-height: 1.5; }
+
   /* diccionari */
   .dict { text-align: left; font-size: 1.05rem; max-height: 60vh; overflow: auto; columns: 2; column-gap: 24px; }
   .dict div { break-inside: avoid; padding: 2px 0; }

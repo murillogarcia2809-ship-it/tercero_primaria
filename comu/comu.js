@@ -418,7 +418,9 @@
           if (o.onCorrect) o.onCorrect(q, { attempts, R });
           await U.sleep(o.autoNextMs || 1400);
           state = 'done';
-          resolve({ mistakes: attempts, ok: attempts === 0 });
+          // Preguntes de diversos passos poden comptar els seus propis errors (extraMistakes)
+          const total = attempts + (R.extraMistakes ? R.extraMistakes() : 0);
+          resolve({ mistakes: total, ok: total === 0 });
         } else {
           attempts++;
           const giveUp = attempts >= (o.maxAttempts || 2);

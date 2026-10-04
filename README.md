@@ -6,7 +6,7 @@ Jocs educatius en català per a l'Eloi (curs 2026-27). Són HTML, CSS i JavaScri
 
 | Matèria | Joc | Carpeta |
 |---|---|---|
-| Matemàtiques | 🚀 Missió Galàxia Numèrica: descomposició DM/UM/C/D/U i números en lletres | `mates/galaxia/` |
+| Matemàtiques | 🚀 Missió Galàxia Numèrica: descomposició DM/UM/C/D/U i números en lletres (pas a pas: fins al 99, fins al 999 i amb milers) | `mates/galaxia/` |
 | Anglès | 🦜 L'Illa de les Paraules: vocabulari per temes | `angles/vocabulari/` |
 | Anglès | 🍪 El Monstre Comptador: comptar de l'1 al 20 | `angles/comptar/` |
 

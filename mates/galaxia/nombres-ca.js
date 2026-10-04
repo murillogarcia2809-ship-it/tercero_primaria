@@ -59,7 +59,65 @@
     [1000, 'mil'], [2000, 'dos mil'], [10000, 'deu mil'], [21000, 'vint-i-un mil'],
   ];
 
-  const api = { numCat, formesAcceptades, comprovaText, DICCIONARI };
+  /* ---------- Trossos: com es parteix un número per escriure'l ----------
+     23.456 → [milers: "vint-i-tres mil"] [centenes: "quatre-cents"] [resta: "cinquanta-sis"]
+     Els trossos que valen 0 no es diuen. */
+  const nomMil = (m) => (m === 1 ? 'mil' : fins1000(m, true) + ' mil');
+  const nomCent = (c) => (c === 1 ? 'cent' : UNI[c] + '-cents');
+  function trossos(n) {
+    const m = Math.floor(n / 1000), c = Math.floor((n % 1000) / 100), r = n % 100, t = [];
+    if (m) t.push({ k: 'm', v: m, text: nomMil(m) });
+    if (c) t.push({ k: 'c', v: c, text: nomCent(c) });
+    if (r) t.push({ k: 'r', v: r, text: fins100(r, false) });
+    return t;
+  }
+  // Gira les dues xifres d'un número (47 → 74) si té sentit
+  const gira = (x) => (x >= 12 && x <= 98 && x % 10 && Math.floor(x / 10) !== x % 10 ? (x % 10) * 10 + Math.floor(x / 10) : null);
+
+  // Errors típics per a un tros (per fer opcions incorrectes que ensenyin alguna cosa)
+  function errades(p) {
+    const out = new Set();
+    if (p.k === 'm') {
+      const m = p.v;
+      if (m === 1) { out.add('un mil'); out.add('u mil'); }
+      else {
+        if (p.text.includes('-')) out.add(p.text.replace(/-i-|-/g, ' '));
+        if (m < 10) out.add(UNI[m] + '-mil');
+        if (m > 20 && m % 10 === 1) out.add(p.text.replace(/un mil$/, 'u mil'));
+        const g = gira(m); if (g) out.add(nomMil(g));
+        out.add(nomMil(m + 1 < 100 ? m + 1 : m - 1));
+      }
+    } else if (p.k === 'c') {
+      const c = p.v;
+      if (c === 1) { out.add('un cent'); out.add('u-cents'); }
+      else { out.add(UNI[c] + '-cent'); out.add(UNI[c] + ' cents'); out.add(DES[c]); out.add(UNI[c] + '-centes'); }
+    } else {
+      const r = p.v, d = Math.floor(r / 10), u = r % 10;
+      if (p.text.includes('-')) out.add(p.text.replace(/-i-|-/g, ' '));
+      if (d === 2 && u) out.add('vint-' + UNI[u]);
+      if (d > 2 && u) out.add(DES[d] + '-i-' + UNI[u]);
+      if (d === 1 && u) out.add('deu-' + UNI[u]);
+      const g = gira(r); if (g) out.add(fins100(g, false));
+      if (r > 1) out.add(fins100(r - 1, false));
+      if (r < 99) out.add(fins100(r + 1, false));
+    }
+    out.delete(p.text);
+    return Array.from(out);
+  }
+  // Textos incorrectes però creïbles per a un número sencer
+  function erradesText(n) {
+    const parts = trossos(n), bones = formesAcceptades(n), out = new Set();
+    for (let k = 0; k < 40 && out.size < 6; k++) {
+      const i = Math.floor(Math.random() * parts.length);
+      const e = errades(parts[i]);
+      if (!e.length) continue;
+      const alt = parts.map((p, j) => (j === i ? e[Math.floor(Math.random() * e.length)] : p.text)).join(' ');
+      if (!bones.includes(alt)) out.add(alt);
+    }
+    return Array.from(out);
+  }
+
+  const api = { numCat, formesAcceptades, comprovaText, DICCIONARI, UNI, DES, fins100, trossos, errades, erradesText };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.NombresCa = api;
 })(this);
