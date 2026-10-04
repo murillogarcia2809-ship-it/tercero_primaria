@@ -268,7 +268,7 @@
     const qs = U.shuffle(short.length >= 5 ? short : il.words).slice(0, 5);
     const S = playScreen(il, act, qs.length);
     const stars = await runQuiz(il, act, S, qs, (q, ctx) => {
-      S.setGuide('Escriu la paraula en anglès amb les lletres. Toca 🔊 per escoltar-la!', 'ca').then(() => en(q.en));
+      S.setGuide('Escriu la paraula en anglès amb les lletres. Toca l\'altaveu 🔊 per escoltar-la!', 'ca').then(() => en(q.en));
       const top = U.h(`<div style="display:flex;align-items:center;gap:18px"><div class="bigpic">${pic(q)}</div><button class="icon-btn" style="background:#fff">🔊</button></div>`);
       top.querySelector('button').onclick = () => en(q.en);
       ctx.area.appendChild(top);

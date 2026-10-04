@@ -132,21 +132,44 @@
     if (lang === 'en') return findVoice(['en-gb', 'en-us', 'en']);
     return findVoice([lang]);
   }
+  /* Prepara el text per a la veu: treu etiquetes HTML, emojis i símbols (▲, ▶, ✔…),
+     i el divideix en frases sense signes de puntuació perquè no es llegeixin literalment.
+     Les frases es diuen seguides, de manera que les pauses es mantenen. */
+  const SIMBOLS = /[\p{Extended_Pictographic}\p{Regional_Indicator}‍️⃣←-⇿⌀-⏿■-◿☀-➿⬀-⯿]/gu;
+  const SIGLES = { DM: 'desenes de miler', UM: 'unitats de miler', C: 'centenes', D: 'desenes', U: 'unitats' };
+  function frasesVeu(text, lang = 'ca') {
+    let t = U.stripTags(text)
+      .replace(SIMBOLS, ' ')
+      .replace(/(\d)\.(?=\d{3}\b)/g, '$1');          // 34.072 → 34072 (que no digui "punt")
+    if (lang === 'ca') {
+      t = t.replace(/\s\+\s/g, ' més ').replace(/\s=\s/g, ' és igual a ')
+        .replace(/\(\s*(DM|UM|C|D|U)\s*\)/g, ' ')     // "centenes (C)" → no repetir
+        .replace(/\b(DM|UM|C|D|U)\b(?!['’\p{L}])/gu, (m) => SIGLES[m]);
+    }
+    return t
+      .split(/[.!?¡¿;:…,"“”«»()[\]{}/\\*_=+<>|~^]+|\s[-–—]\s/)
+      .map((f) => f.replace(/\s+/g, ' ').trim())
+      .filter((f) => /[\p{L}\d]/u.test(f));
+  }
   function say(text, lang = 'ca', rate) {
     return new Promise((res) => {
       if (!voiceOn || !synth || !text) { res(); return; }
       try {
         synth.cancel();
-        const u = new SpeechSynthesisUtterance(U.stripTags(text).replace(/[🔊📖▶✔]/gu, ''));
+        const frases = frasesVeu(text, lang);
+        if (!frases.length) { res(); return; }
         const v = voiceFor(lang);
-        if (v) { u.voice = v; u.lang = v.lang; } else u.lang = lang === 'ca' ? 'ca-ES' : lang === 'en' ? 'en-GB' : lang;
-        u.rate = rate || (lang === 'en' ? 0.85 : 0.98);
-        u.pitch = 1.05;
         let done = false;
         const fin = () => { if (!done) { done = true; res(); } };
-        u.onend = fin; u.onerror = fin;
+        frases.forEach((f, i) => {
+          const u = new SpeechSynthesisUtterance(f);
+          if (v) { u.voice = v; u.lang = v.lang; } else u.lang = lang === 'ca' ? 'ca-ES' : lang === 'en' ? 'en-GB' : lang;
+          u.rate = rate || (lang === 'en' ? 0.85 : 0.98);
+          u.pitch = 1.05;
+          if (i === frases.length - 1) { u.onend = fin; u.onerror = fin; }
+          synth.speak(u);
+        });
         setTimeout(fin, 1500 + text.length * 110);
-        synth.speak(u);
       } catch (e) { res(); }
     });
   }

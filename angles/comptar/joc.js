@@ -341,7 +341,7 @@
     const qs = someNums(6, true);
     const S = playScreen(l, qs.length);
     const stars = await runQuiz(S, qs, (q, ctx) => {
-      S.setGuide('Escriu el número en anglès amb les lletres. Toca 🔊 per escoltar-lo!').then(() => en(W[q]));
+      S.setGuide('Escriu el número en anglès amb les lletres. Toca l\'altaveu 🔊 per escoltar-lo!').then(() => en(W[q]));
       const top = U.h(`<div style="display:flex;align-items:center;gap:18px"><div class="bignum">${q}</div><button class="icon-btn" style="background:#fff">🔊</button></div>`);
       top.querySelector('button').onclick = () => en(W[q]);
       ctx.area.appendChild(top);
