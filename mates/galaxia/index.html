@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../comu/comu.css">
 <style>
-  body { background: radial-gradient(ellipse at 50% 120%, #3a1c71 0%, #10153a 55%, #05071a 100%) fixed; }
+  body { background: radial-gradient(ellipse at 50% 120%, #3a1c71 0%, #10153a 55%, #05071a 100%); }
   #stars { position: fixed; inset: 0; z-index: -1; }
   #app { min-height: 100vh; }
 
@@ -105,6 +105,16 @@
   .hp i { display: block; height: 100%; background: linear-gradient(90deg, #ff5a5f, #ffb347); transition: width .4s; }
   .shields { font-size: 1.6rem; letter-spacing: .1em; }
   .shields span.off { filter: grayscale(1) opacity(.25); }
+  .shields { white-space: nowrap; }
+  @media (max-width: 500px) {
+    .boss-bar { padding: 8px 10px; gap: 6px; margin-top: 4px; }
+    .boss-side { gap: 6px; min-width: 0; }
+    .boss-side .who { font-size: 2.2rem; }
+    .boss-side .who svg { width: 44px; }
+    .hp { width: 90px; height: 14px; }
+    .shields { font-size: 1.15rem; letter-spacing: 0; }
+    .beam { left: 40px; right: 50px; }
+  }
   .beam { position: absolute; top: 50%; height: 6px; border-radius: 3px; left: 70px; right: 90px; transform-origin: left; animation: beam .35s ease-out forwards; }
   .beam.me { background: linear-gradient(90deg, #4fc3f7, #fff); }
   .beam.him { background: linear-gradient(270deg, #ff5a5f, #fff); transform-origin: right; }

@@ -9,7 +9,7 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="../../comu/comu.css">
 <style>
-  body { background: linear-gradient(180deg, #4fc3f7 0%, #0288d1 45%, #01579b 100%) fixed; }
+  body { background: linear-gradient(180deg, #4fc3f7 0%, #0288d1 45%, #01579b 100%); }
   .waves { position: fixed; left: 0; right: 0; bottom: 0; height: 90px; z-index: -1; opacity: .3;
     background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 40'%3E%3Cpath d='M0 20 Q25 0 50 20 T100 20 T150 20 T200 20 V40 H0Z' fill='white'/%3E%3C/svg%3E") repeat-x;
     background-size: 200px 90px; animation: waves 8s linear infinite; }
@@ -72,7 +72,7 @@
   .lcard:active { transform: scale(.95); }
 
   /* parelles */
-  .memory { display: grid; grid-template-columns: repeat(4, minmax(70px, 130px)); gap: 12px; justify-content: center; }
+  .memory { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; width: 100%; max-width: 560px; }
   .mcard { aspect-ratio: 3/4; perspective: 600px; background: none; padding: 0; }
   .mcard .in { position: relative; width: 100%; height: 100%; transition: transform .45s; transform-style: preserve-3d; }
   .mcard.open .in, .mcard.done .in { transform: rotateY(180deg); }
@@ -81,7 +81,7 @@
   .mcard .b { background: #fff; color: var(--ink); transform: rotateY(180deg); font-size: 2.6rem; font-weight: 700; padding: 4px; text-align: center; }
   .mcard .b.txt { font-size: clamp(.9rem, 3.2vw, 1.35rem); }
   .mcard.done .b { background: #b9f6ca; }
-  @media (max-width: 520px) { .memory { grid-template-columns: repeat(3, 1fr); } .guide .gchar { font-size: 2.6rem; } .guide .gbubble { font-size: 1.05rem; } }
+  @media (max-width: 520px) { .memory { gap: 8px; } .mcard .b { font-size: 2.2rem; } .guide .gchar { font-size: 2.6rem; } .guide .gbubble { font-size: 1.05rem; } }
 </style>
 </head>
 <body>

@@ -141,6 +141,12 @@ input { font-family: inherit; }
 }
 .keypad button:active { transform: translateY(3px); box-shadow: 0 2px 0 #a9aec9; }
 .keypad .kp-del, .keypad .kp-clr { background: #ffe1e1; }
+@media (max-width: 500px), (max-height: 760px) {
+  .kp { gap: 8px; }
+  .kp-display { min-height: 60px; font-size: 2.4rem; padding: 4px 14px; }
+  .keypad { grid-template-columns: repeat(3, 76px); gap: 8px; }
+  .keypad button { height: 52px; font-size: 1.7rem; }
+}
 
 /* ---------- Opcions (tipus test) ---------- */
 .choices { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; width: 100%; max-width: 760px; margin: 0 auto; }
@@ -197,4 +203,14 @@ input { font-family: inherit; }
 
 @media print {
   .topbar, .no-print { display: none !important; }
+}
+
+/* Pantalles de joc més compactes al mòbil */
+@media (max-width: 500px) {
+  body .play { gap: 10px; padding-top: 64px; padding-left: 10px; padding-right: 10px; }
+  body .area { gap: 12px; }
+  body .play-head { gap: 6px; }
+  body .guide .gbubble { padding: 10px 12px; }
+  .choice { font-size: 1.3rem; min-height: 64px; padding: 12px 8px; }
+  .choices { gap: 10px; }
 }
