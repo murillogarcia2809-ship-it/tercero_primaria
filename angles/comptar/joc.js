@@ -254,7 +254,7 @@
       const row = U.h(`<div class="feed"><div>${MONSTER}</div>
         <div class="jar"><button class="food-btn">${food.e}</button>
           <div class="counter"><span class="cnum">0</span><small></small></div>
-          <button class="btn blue" style="font-size:1.1rem">↩️ Torna a començar</button></div></div>`);
+          <button class="btn blue" style="font-size:1.1rem">↩️ Torna a 0</button></div></div>`);
       big = row.querySelector('.monster');
       const fb = row.querySelector('.food-btn'), cnum = row.querySelector('.cnum'), cw = row.querySelector('small');
       let count = 0, locked = false;
