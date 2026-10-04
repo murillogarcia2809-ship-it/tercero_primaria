@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Els jocs de l'Eloi · 3r</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="comu/comu.css">
+<style>
+  body { background: linear-gradient(160deg, #ff9a8b 0%, #ff6a88 30%, #a855f7 70%, #4f46e5 100%) fixed; }
+  .portal { max-width: 1050px; margin: 0 auto; padding: 40px 16px 50px; text-align: center; }
+  .portal h1 { font-size: clamp(2.3rem, 7vw, 4rem); margin: 0; text-shadow: 0 5px 0 rgba(0,0,0,.2); }
+  .portal .sub { font-size: 1.3rem; margin: 6px 0 30px; opacity: .95; }
+  .subject { margin: 26px 0 10px; font-size: 1.7rem; font-weight: 700; text-align: left; display: flex; align-items: center; gap: 10px; }
+  .games { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+  .game {
+    display: block; text-decoration: none; color: var(--ink); background: #fff; border-radius: 28px; overflow: hidden;
+    box-shadow: 0 10px 0 rgba(0,0,0,.18), 0 16px 30px rgba(0,0,0,.2); transition: transform .15s; text-align: left;
+  }
+  .game:hover { transform: translateY(-4px) rotate(-.5deg); }
+  .game .top { height: 130px; display: flex; align-items: center; justify-content: center; font-size: 4.5rem; background: var(--bg); }
+  .game .top span { animation: bob 2.4s ease-in-out infinite; display: inline-block; }
+  .game .body { padding: 14px 18px 18px; }
+  .game h3 { margin: 0 0 4px; font-size: 1.45rem; }
+  .game p { margin: 0 0 8px; font-size: 1rem; opacity: .75; }
+  .game .score { font-weight: 600; color: #7b2ff7; }
+  .game.soon { opacity: .6; pointer-events: none; }
+  footer { margin-top: 40px; opacity: .8; font-size: .95rem; }
+</style>
+</head>
+<body>
+<div class="portal">
+  <div style="font-size:4rem">🎒</div>
+  <h1>Els jocs de l'Eloi</h1>
+  <p class="sub">3r de Primària · Tria un joc i comença l'aventura!</p>
+
+  <div class="subject">🔢 Matemàtiques</div>
+  <div class="games">
+    <a class="game" href="mates/galaxia/" style="--bg:linear-gradient(135deg,#10153a,#3a1c71)">
+      <div class="top"><span>🚀</span></div>
+      <div class="body"><h3>Missió Galàxia Numèrica</h3><p>Descompon números (DM, UM, C, D, U) i escriu-los en lletres per vèncer el Capità Zero.</p><div class="score" data-game="galaxia"></div></div>
+    </a>
+  </div>
+
+  <div class="subject">🇬🇧 Anglès</div>
+  <div class="games">
+    <a class="game" href="angles/vocabulari/" style="--bg:linear-gradient(135deg,#4fc3f7,#0288d1)">
+      <div class="top"><span>🦜</span></div>
+      <div class="body"><h3>L'Illa de les Paraules</h3><p>Aprèn vocabulari en anglès i obre els cofres del tresor de la Polly.</p><div class="score" data-game="illa"></div></div>
+    </a>
+    <a class="game" href="angles/comptar/" style="--bg:linear-gradient(135deg,#7f53ac,#647dee)">
+      <div class="top"><span>🍪</span></div>
+      <div class="body"><h3>El Monstre Comptador</h3><p>Compta de l'1 al 20 en anglès i dona galetes al monstre Nyam.</p><div class="score" data-game="monstre"></div></div>
+    </a>
+  </div>
+
+  <footer>Fet amb ❤️ per a l'Eloi</footer>
+</div>
+<script>
+  // Mostra les estrelles guanyades a cada joc
+  (function () {
+    let d = {};
+    try { d = JSON.parse(localStorage.getItem('eloi-3r-v1')) || {}; } catch (e) { /* sense dades */ }
+    const sum = (o) => Object.values(o || {}).reduce((a, v) => a + (typeof v === 'number' ? v : 0), 0);
+    const stars = {
+      galaxia: sum((d.galaxia || {}).stars),
+      illa: Object.values((d.illa || {}).isl || {}).reduce((a, o) => a + sum(o), 0),
+      monstre: sum((d.monstre || {}).lv),
+    };
+    document.querySelectorAll('.score').forEach((el) => {
+      const s = stars[el.dataset.game] || 0;
+      el.textContent = s ? `⭐ ${s} estrelles` : '✨ Nou!';
+    });
+  })();
+</script>
+</body>
+</html>
