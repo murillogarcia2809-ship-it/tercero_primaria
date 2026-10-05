@@ -7,7 +7,7 @@ Jocs educatius en català per a l'Eloi (curs 2026-27). Són HTML, CSS i JavaScri
 | Matèria | Joc | Carpeta |
 |---|---|---|
 | Matemàtiques | 🚀 Missió Galàxia Numèrica: descomposició DM/UM/C/D/U i números en lletres (pas a pas: fins al 99, fins al 999 i amb milers) | `mates/galaxia/` |
-| Medi Natural | 🦴 El Laboratori de l'Ossi: parts del cos, la cara, braços i cames, articulacions, esquelet, músculs i els cinc sentits | `medi/cos/` |
+| Medi Natural | 🦴 El Laboratori de l'Ossi: el cos humà (temari de 3r) — repàs de les parts del cos, funcions vitals, aparells digestiu, respiratori, circulatori i excretor, sentits, sistema nerviós, aparell locomotor i reproductor | `medi/cos/` |
 | Anglès | 🦜 L'Illa de les Paraules: vocabulari per temes | `angles/vocabulari/` |
 | Anglès | 🍪 El Monstre Comptador: comptar de l'1 al 20 | `angles/comptar/` |
 
@@ -18,7 +18,7 @@ index.html          Portal amb tots els jocs
 comu/comu.css       Estils compartits
 comu/comu.js        Sons, veu, diàlegs, teclat, motor de preguntes (objecte global Eloi)
 mates/galaxia/      Joc de mates (nombres-ca.js = números en lletres en català)
-medi/cos/           Joc del cos humà (dades.js = figures SVG, parts del cos i preguntes)
+medi/cos/           Joc del cos humà (dades.js = cos, cara i esquelet; aparells.js = aparells i preguntes)
 angles/vocabulari/  Joc de vocabulari (paraules.js = llista de paraules editable)
 angles/comptar/     Joc de comptar
 ```

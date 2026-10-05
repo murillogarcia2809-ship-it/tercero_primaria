@@ -166,7 +166,6 @@ window.COS = (function () {
   // ---------- Grups de parts per nivell ----------
   const SETS = {
     cos: ['cap', 'coll', 'tronc', 'sup', 'inf'],
-    cara: ['cabells', 'front', 'celles', 'ulls', 'nas', 'galtes', 'boca', 'orelles', 'barbeta'],
     extr: ['espatlla', 'bras', 'colze', 'avantbras', 'canell', 'ma', 'maluc', 'cuixa', 'genoll', 'cama', 'turmell', 'peu'],
     art: ['coll', 'espatlla', 'colze', 'canell', 'maluc', 'genoll', 'turmell'],
     ossos: ['crani', 'mandibula', 'clavicula', 'costelles', 'columna', 'humer', 'pelvis', 'femur', 'rotula', 'tibia'],
@@ -175,7 +174,6 @@ window.COS = (function () {
   // Paraules per lletrejar (sense accents, màxim 7 lletres)
   const SPELL = {
     cos: ['cap', 'coll', 'tronc'],
-    cara: ['ulls', 'nas', 'boca', 'front', 'galtes', 'celles', 'orelles', 'barbeta'],
     extr: ['colze', 'genoll', 'canell', 'cuixa', 'peu', 'turmell', 'cama'],
     ossos: ['crani', 'pelvis'],
   };
@@ -199,11 +197,6 @@ window.COS = (function () {
       { q: 'En quines tres parts es divideix el cos humà?', o: ['cap, tronc i extremitats', 'ulls, nas i boca', 'mans, peus i dits'], fb: 'El cos té tres parts: cap, tronc i extremitats.' },
       { q: 'Quina part del cos uneix el cap amb el tronc?', o: ['el coll', 'el genoll', 'la mà'], fb: 'El coll uneix el cap amb el tronc.' },
       { q: 'On són el cor i els pulmons?', o: ['al tronc', 'al cap', 'a les cames'], fb: 'El cor i els pulmons són a dins del tronc.' },
-    ],
-    cara: [
-      { q: 'Amb quina part de la cara hi veiem?', o: ['els ulls', 'les orelles', 'el nas'] },
-      { q: 'Quina part de la cara hi ha just sobre els ulls?', o: ['les celles', 'les galtes', 'la barbeta'] },
-      { q: 'Amb què parlem i mengem?', o: ['amb la boca', 'amb el front', 'amb les celles'] },
     ],
     extr: [
       { q: 'El colze és a les extremitats…', o: ['superiors', 'inferiors'], fb: 'El colze és al braç: extremitats superiors.' },
@@ -290,7 +283,6 @@ window.COS = (function () {
 
   const FETS = {
     cos: 'Quan neixes, el cap fa una quarta part de tot el cos!',
-    cara: 'Parpellegem unes quinze vegades cada minut sense adonar-nos-en!',
     extr: 'Cada mà té 27 ossos!',
     art: 'El genoll és l\'articulació més gran del cos!',
     ossos: 'Un adult té 206 ossos, però un nadó en té gairebé 300!',
