@@ -44,6 +44,14 @@
     </a>
   </div>
 
+  <div class="subject">🌿 Medi Natural</div>
+  <div class="games">
+    <a class="game" href="medi/cos/index.html" style="--bg:linear-gradient(135deg,#0d9488,#15803d)">
+      <div class="top"><span>🦴</span></div>
+      <div class="body"><h3>El Laboratori de l'Ossi</h3><p>Aprèn les parts del cos humà, els ossos, els músculs i els cinc sentits.</p><div class="score" data-game="cos"></div></div>
+    </a>
+  </div>
+
   <div class="subject">🇬🇧 Anglès</div>
   <div class="games">
     <a class="game" href="angles/vocabulari/index.html" style="--bg:linear-gradient(135deg,#4fc3f7,#0288d1)">
@@ -68,6 +76,7 @@
       galaxia: sum((d.galaxia || {}).stars),
       illa: Object.values((d.illa || {}).isl || {}).reduce((a, o) => a + sum(o), 0),
       monstre: sum((d.monstre || {}).lv),
+      cos: sum((d.cos || {}).lv),
     };
     document.querySelectorAll('.score').forEach((el) => {
       const s = stars[el.dataset.game] || 0;
