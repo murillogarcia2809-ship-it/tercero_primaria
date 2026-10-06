@@ -157,12 +157,12 @@
         const w = U.pick(PRAISE);
         floatMsg(`${w} ${U.pick(EMO)}`);
         bubbleSay(S, `<b>${w}</b> ${q.en ? `<i>${q.en}</i> = ${q.ca}` : ''}`);
-        en(q.en ? `${q.en}!` : w);
+        return en(q.en ? `${q.en}!` : w);
       },
       onWrong: (q, { giveUp }) => {
         sfx.bad();
-        if (giveUp) { S.setGuide(`No passa res! És <b>${q.en}</b> (${q.ca}). 👀`, 'ca', false); en(q.en); }
-        else S.setGuide('<b>Oops!</b> Torna-ho a provar! 💪', 'ca');
+        if (giveUp) { S.setGuide(`No passa res! És <b>${q.en}</b> (${q.ca}). 👀`, 'ca', false); return en(q.en); }
+        return S.setGuide('<b>Oops!</b> Torna-ho a provar! 💪', 'ca');
       },
       after: (r, i) => { if (S.dots[i]) S.dots[i].textContent = r.ok ? '💰' : '✔'; },
       ...opts,

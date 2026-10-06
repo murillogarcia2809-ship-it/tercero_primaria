@@ -688,12 +688,13 @@
         const w = U.pick(PRAISE);
         const errs = attempts + (R.extraMistakes ? R.extraMistakes() : 0);
         floatMsg(`${w} ${U.pick(EMO)}`);
-        S.setGuide(`${w} ${errs ? '' : 'A la primera! '}${U.pick(EMO)}`,!['escriu', 'guiat', 'peces', 'triaText'].includes(q.type));
+        return S.setGuide(`${w} ${errs ? '' : 'A la primera! '}${U.pick(EMO)}`, !['escriu', 'guiat', 'peces', 'triaText'].includes(q.type));
       },
       onWrong: (q, { giveUp }) => {
         sfx.bad();
-        S.setGuide(giveUp ? 'No passa res! Mira la solució i fixa-t\'hi bé. 👀' : hint(q));
+        return S.setGuide(giveUp ? 'No passa res! Mira la solució i fixa-t\'hi bé. 👀' : hint(q));
       },
+      revealMs: 4500,
       after: (r, i) => { dots[i].textContent = r.ok ? '💎' : '✔'; },
     });
     const stars = starsFor(res.mistakes, N);
@@ -741,12 +742,12 @@
         setTimeout(() => { sfx.boom(); hit(him); hp--; hpBar.style.width = (hp / HPMAX) * 100 + '%'; }, 320);
         const w = U.pick(['Tocat!', 'Impacte directe!', 'Pam!', 'Boom!', 'Genial!']);
         floatMsg(`${w} 💥`);
-        S.setGuide(w + ' 💥');
+        return S.setGuide(w + ' 💥');
       },
       onWrong: () => {
         sfx.laser(); beam('him');
         setTimeout(() => { sfx.boom(); hit(me); shields--; sh.forEach((s, i) => s.classList.toggle('off', i >= shields)); }, 320);
-        S.setGuide(shields > 1 ? 'Ens han tocat! Mira la solució i seguim lluitant! 🛡️' : 'Ens han tocat! 🛡️');
+        return S.setGuide(shields > 1 ? 'Ens han tocat! Mira la solució i seguim lluitant! 🛡️' : 'Ens han tocat! 🛡️');
       },
       after: async () => { await U.sleep(350); if (hp <= 0 || shields <= 0) return 'stop'; },
     });

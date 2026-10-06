@@ -366,7 +366,7 @@
       const fig = makeFig(q.fig, q.ids, {
         onTap(id) {
           if (locked) return;
-          if (!id) { sfx.tick(); return; }
+          if (!id) { sfx.tick(); floatMsg('Toca just a sobre! 👆'); return; }
           picked = id;
           ctx.submit();
         },
@@ -470,12 +470,12 @@
         sfx.ok(); anim(S.ossi, 'happy');
         const w = U.pick(PRAISE);
         floatMsg(`${w} 🦴`);
-        S.setGuide(`<b>${w}</b> ${R.fb || ''}`);
+        return S.setGuide(`<b>${w}</b> ${R.fb || ''}`);
       },
       onWrong: (q, { giveUp, R }) => {
         sfx.bad(); anim(S.ossi, 'sad');
-        if (giveUp) S.setGuide(`No passa res! ${R.sol || ''} 👀`);
-        else S.setGuide(R.why ? R.why() : '<b>Torna-ho a provar!</b> 💪');
+        if (giveUp) return S.setGuide(`No passa res! ${R.sol || ''} 👀`);
+        return S.setGuide(R.why ? R.why() : '<b>Torna-ho a provar!</b> 💪');
       },
       after: (r, i) => { if (S.dots[i]) S.dots[i].textContent = r.ok ? '⭐' : '✔'; },
       autoNextMs: 1900,

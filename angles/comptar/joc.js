@@ -153,12 +153,12 @@
         const w = U.pick(PRAISE);
         floatMsg(`${w} 🍪`);
         S.setGuide(`<b>${w}</b> ${q} = <b>${W[q]}</b>`, false);
-        en(W[q]);
+        return en(W[q]);
       },
       onWrong: (q, { giveUp }) => {
         sfx.bad(); anim(S.monster, 'sad');
-        if (giveUp) { S.setGuide(`No passa res! Era <b>${q}</b> = <b>${W[q]}</b>. 👀`, false); en(W[q]); }
-        else S.setGuide('<b>Oops!</b> Torna-ho a provar! 💪');
+        if (giveUp) { S.setGuide(`No passa res! Era <b>${q}</b> = <b>${W[q]}</b>. 👀`, false); return en(W[q]); }
+        return S.setGuide('<b>Oops!</b> Torna-ho a provar! 💪');
       },
       after: (r, i) => { if (S.dots[i]) S.dots[i].textContent = r.ok ? '🍪' : '✔'; },
       ...opts,

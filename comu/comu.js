@@ -390,8 +390,12 @@
   // ---------- Motor de preguntes ----------
   /* o = { area, button, questions, render(q, ctx) → {check, reveal, bad, good, auto},
            onCorrect(q, info), onWrong(q, info), progress(i, n), after(result, i) → 'stop',
-           maxAttempts (2), autoNextMs (1300) }
-     Cada pregunta: 2 intents; després es mostra la solució i cal prémer "Entesos". */
+           maxAttempts (2), autoNextMs (1400), revealMs (3500) }
+     Cada pregunta: 2 intents; després es mostra la solució. Sempre es passa sol a la pregunta
+     següent: quan s'encerta, al cap d'autoNextMs; quan s'esgoten els intents, al cap de revealMs
+     (temps per mirar la solució). onCorrect i onWrong poden retornar la promesa de la veu
+     (p. ex. la de say): llavors també s'espera que acabi de parlar, com a màxim uns segons. */
+  const waitVoice = (p, min, max = 7000) => Promise.all([U.sleep(min), Promise.race([p, U.sleep(max)])]);
   function ask(o, q, idx) {
     return new Promise((resolve) => {
       o.area.innerHTML = '';
@@ -403,10 +407,7 @@
       btn.style.visibility = R.auto ? 'hidden' : 'visible';
       btn.textContent = o.checkLabel || 'Comprova ✔';
       btn.disabled = false;
-      btn.onclick = () => {
-        if (state === 'next') { sfx.click(); stopSay(); state = 'done'; resolve({ mistakes: attempts, ok: false }); }
-        else handle();
-      };
+      btn.onclick = () => handle();
       async function handle() {
         if (state !== 'ask') return;
         const res = R.check();
@@ -415,8 +416,8 @@
           state = 'busy';
           btn.style.visibility = 'hidden';
           if (R.good) R.good();
-          if (o.onCorrect) o.onCorrect(q, { attempts, R });
-          await U.sleep(o.autoNextMs || 1400);
+          const voice = o.onCorrect ? o.onCorrect(q, { attempts, R }) : null;
+          await waitVoice(voice, o.autoNextMs || 1400, 5000);
           state = 'done';
           // Preguntes de diversos passos poden comptar els seus propis errors (extraMistakes)
           const total = attempts + (R.extraMistakes ? R.extraMistakes() : 0);
@@ -424,15 +425,15 @@
         } else {
           attempts++;
           const giveUp = attempts >= (o.maxAttempts || 2);
-          if (giveUp) state = 'busy';
+          if (giveUp) { state = 'busy'; btn.style.visibility = 'hidden'; }
           if (R.bad && !giveUp) R.bad();
-          if (o.onWrong) o.onWrong(q, { attempts, giveUp, R });
+          const voice = o.onWrong ? o.onWrong(q, { attempts, giveUp, R }) : null;
           if (giveUp) {
+            // Es mostra la solució i es passa sol a la següent pregunta
             if (R.reveal) R.reveal();
-            await U.sleep(500);
-            state = 'next';
-            btn.style.visibility = 'visible';
-            btn.textContent = 'Entesos ▶';
+            await waitVoice(voice, o.revealMs || 3500);
+            state = 'done';
+            resolve({ mistakes: attempts, ok: false });
           }
         }
       }
