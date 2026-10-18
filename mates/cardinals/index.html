@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>El Detectiu Lupa i els Números Perduts</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🔍</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../comu/comu.css">
+<link rel="stylesheet" href="../../comu/missio.css">
+<style>
+  :root { --accent: #b388ff; }
+  body { background: radial-gradient(circle at 50% -10%, #8e6bd6 0%, #4b3a8c 40%, #1e1b3a 100%); background-attachment: fixed; }
+  .lupa { position: relative; display: inline-block; }
+  .lupa-g { position: absolute; right: -.25em; bottom: -.1em; font-size: .55em; transform: rotate(-20deg); }
+
+  .nom-card { display: flex; align-items: center; gap: 12px; background: rgba(255,255,255,.12); border: 2px solid rgba(255,255,255,.3); border-radius: 22px; padding: 12px 16px; font-size: clamp(1.4rem, 6vw, 2rem); font-weight: 600; text-align: center; max-width: 620px; }
+
+  .houses { display: flex; gap: 10px; align-items: flex-end; }
+  .house { display: flex; flex-direction: column; align-items: center; background: rgba(255,255,255,.1); border-radius: 18px; padding: 8px 10px; min-width: 92px; }
+  .house span { font-size: 2.8rem; line-height: 1; }
+  .house b { font-size: 1.8rem; background: #fff; color: var(--ink); border-radius: 12px; padding: 0 10px; margin-top: 4px; }
+  .house.me { transform: scale(1.12); }
+  .house.q b { background: var(--gold); color: #4a2a00; animation: pulse 1.2s infinite; }
+  .house.ok b { background: #b9f6ca; animation: pop .4s; }
+
+  .cmp { display: flex; align-items: center; gap: 14px; font-size: clamp(2.2rem, 10vw, 3.6rem); font-weight: 700; text-shadow: 0 4px 0 rgba(0,0,0,.3); }
+  .cmp-s { display: inline-flex; align-items: center; justify-content: center; width: 1.4em; height: 1.4em; border-radius: 50%; background: var(--gold); color: #4a2a00; text-shadow: none; }
+  .cmp-s.ok { background: #b9f6ca; color: #0b4d26; animation: pop .4s; }
+  .choices.sigs { grid-template-columns: repeat(3, 1fr); max-width: 380px; }
+  .choices.sigs .sig { font-size: 2.6rem; font-weight: 700; line-height: 1; }
+
+  .ord-slots { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; justify-content: center; }
+  .ord-slots i { font-style: normal; font-size: 1.4rem; opacity: .8; }
+  .ord-slot { min-width: 72px; height: 56px; border-radius: 14px; border: 3px dashed rgba(255,255,255,.5); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; }
+  .ord-slot.ok { background: #b9f6ca; color: #0b4d26; border-style: solid; border-color: #2ecc71; animation: pop .35s; }
+  .ord-bank { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+  .ord-n { min-width: 86px; padding: 12px 14px; border-radius: 18px; font-size: 1.9rem; font-weight: 700; background: linear-gradient(#e9dcff, #b388ff); color: #2a1155; box-shadow: 0 5px 0 #7e57c2; }
+  .ord-n.used { visibility: hidden; }
+
+  .recta { width: 100%; max-width: 560px; }
+  .recta svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .recta .arrow { animation: bob 1.2s infinite; }
+
+  .socks { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; font-size: 1.9rem; }
+  .socks .pair { background: rgba(255,255,255,.14); border-radius: 14px; padding: 2px 8px; }
+  .choices.two { grid-template-columns: 1fr 1fr; max-width: 460px; }
+  .choices.five { grid-template-columns: repeat(5, 1fr); max-width: 460px; }
+  .choices.five .choice { font-size: 1.7rem; padding: 10px 4px; }
+
+  .carta { background: #fff7e0; color: #4a3a12; border-radius: 18px; padding: 14px 18px; font-size: 1.35rem; line-height: 1.45; max-width: 560px; box-shadow: 0 6px 0 rgba(0,0,0,.2); transform: rotate(-1deg); }
+
+  .race { display: flex; align-items: flex-end; gap: 6px; background: linear-gradient(transparent 60%, rgba(255,255,255,.15) 60%); border-radius: 18px; padding: 8px 12px; }
+  .race .flag { font-size: 2.4rem; }
+  .runner { display: flex; flex-direction: column; align-items: center; }
+  .runner span { font-size: 2.6rem; line-height: 1.1; transform: scaleX(-1); }
+  .runner.hl span { filter: drop-shadow(0 0 8px #ffd23f); animation: bob 1s infinite; }
+  .runner .pl { font-weight: 700; font-size: 1rem; opacity: 0; transition: opacity .3s; }
+  .race.shown .pl { opacity: 1; }
+  @media (max-width: 500px) {
+    .house { min-width: 0; flex: 1; padding: 6px; } .house span { font-size: 2.2rem; } .house b { font-size: 1.4rem; }
+    .ord-n { min-width: 70px; font-size: 1.5rem; padding: 10px; }
+    .ord-slot { min-width: 60px; height: 48px; font-size: 1.3rem; }
+    .runner span { font-size: 2.1rem; } .race .flag { font-size: 2rem; }
+    .carta { font-size: 1.15rem; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../../comu/comu.js"></script>
+<script src="../../comu/premi.js"></script>
+<script src="../../comu/missio.js"></script>
+<script src="../galaxia/nombres-ca.js"></script>
+<script src="joc.js"></script>
+</body>
+</html>

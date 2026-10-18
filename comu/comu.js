@@ -46,6 +46,52 @@
     set(k, v) { const d = load(); d[k] = v; save(d); },
   };
 
+  // ---------- Perfil del jugador (nom i nen/nena) ----------
+  /* Els textos poden portar marques que es canvien pel jugador:
+     {nom} → Martina · {el} → l'Eloi / en Pau / la Martina · {de} → de l'Eloi / d'en Pau / de la Martina
+     {benvingut|benvinguda} → la forma de nen o de nena */
+  const perfil = () => store.get('perfil', null);
+  const nom = () => (perfil() || {}).nom || 'campió';
+  const nena = () => (perfil() || {}).g === 'a';
+  function el() {
+    const n = nom();
+    if (/^h?[aeiouàèéíïòóúü]/i.test(n) && !(nena() && /^h?[iuïü]/i.test(n))) return 'l\'' + n;
+    return (nena() ? 'la ' : 'en ') + n;
+  }
+  const de = () => { const a = el(); return a.startsWith('en ') ? 'd\'' + a : 'de ' + a; };
+  function t(s) {
+    if (typeof s !== 'string' || s.indexOf('{') < 0) return s;
+    return s.replace(/\{nom\}/g, nom()).replace(/\{el\}/g, el()).replace(/\{de\}/g, de())
+      .replace(/\{([^{}|<>]*)\|([^{}|<>]*)\}/g, (m, a, b) => (nena() ? b : a));
+  }
+  // Pantalla per dir el nom. En desar, es torna a carregar la pàgina perquè tot surti amb el nom nou.
+  function demanaPerfil({ canviar = false } = {}) {
+    const p = perfil() || {};
+    const ov = U.h(`<div class="perfil-ov"><div class="perfil-box">
+      <div class="perfil-hi">👋</div>
+      <h2>${canviar ? 'Canviar el nom' : 'Hola! Com et dius?'}</h2>
+      <input class="perfil-in" type="text" maxlength="18" autocomplete="off" autocapitalize="words" spellcheck="false" placeholder="Escriu el teu nom" value="${(p.nom || '').replace(/"/g, '')}">
+      <div class="perfil-btns"><button class="btn blue" data-g="o">Sóc un nen 👦</button><button class="btn" data-g="a" style="background:linear-gradient(#ff9ecb,#ff5fa2);color:#fff;box-shadow:0 6px 0 #c2407a">Sóc una nena 👧</button></div>
+      ${canviar ? '<button class="perfil-cancel">Cancel·lar</button>' : ''}
+    </div></div>`);
+    const inp = ov.querySelector('input');
+    ov.querySelectorAll('[data-g]').forEach((b) => {
+      b.onclick = () => {
+        const n = inp.value.trim().replace(/\s+/g, ' ').replace(/[<>{}|"]/g, '');
+        if (!n) { U.shake(inp); inp.focus(); return; }
+        store.set('perfil', { nom: n.charAt(0).toUpperCase() + n.slice(1), g: b.dataset.g });
+        location.reload();
+      };
+    });
+    const c = ov.querySelector('.perfil-cancel');
+    if (c) c.onclick = () => ov.remove();
+    document.body.appendChild(ov);
+    setTimeout(() => inp.focus(), 200);
+  }
+  function comprovaPerfil() { if (!perfil()) demanaPerfil(); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', comprovaPerfil);
+  else setTimeout(comprovaPerfil, 0);
+
   let soundOn = store.get('so', true);
   let voiceOn = store.get('veu', true);
 
@@ -142,7 +188,10 @@
       .replace(SIMBOLS, ' ')
       .replace(/(\d)\.(?=\d{3}\b)/g, '$1');          // 34.072 → 34072 (que no digui "punt")
     if (lang === 'ca') {
-      t = t.replace(/\s\+\s/g, ' més ').replace(/\s=\s/g, ' és igual a ')
+      t = t.replace(/(\d)\s*[×x]\s*(?=\d)/g, '$1 per ')               // 3 × 4 → 3 per 4
+        .replace(/(\d)\s+[−-]\s+(?=\d)/g, '$1 menys ')                 // 9 − 2 → 9 menys 2
+        .replace(/(^|\s)\+(?=\d)/g, '$1més ').replace(/(^|\s)[−-](?=\d)/g, '$1menys ') // +5 / −3
+        .replace(/\s\+\s/g, ' més ').replace(/\s=\s/g, ' és igual a ')
         .replace(/\(\s*(DM|UM|C|D|U)\s*\)/g, ' ')     // "centenes (C)" → no repetir
         .replace(/\b(DM|UM|C|D|U)\b(?!['’\p{L}])/gu, (m) => SIGLES[m]);
     }
@@ -153,6 +202,7 @@
   }
   function say(text, lang = 'ca', rate) {
     return new Promise((res) => {
+      text = t(text);
       if (!voiceOn || !synth || !text) { res(); return; }
       try {
         synth.cancel();
@@ -214,9 +264,9 @@
       const show = () => {
         const l = lines[i];
         ch.innerHTML = l.who;
-        nm.textContent = l.name || '';
-        tx.innerHTML = l.text;
-        next.textContent = i === lines.length - 1 ? (l.btn || 'Som-hi! 🚀') : 'Següent ▶';
+        nm.textContent = t(l.name || '');
+        tx.innerHTML = t(l.text);
+        next.textContent = i === lines.length - 1 ? t(l.btn || 'Som-hi! 🚀') : 'Següent ▶';
         bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop');
         say(l.say || l.text, l.lang || 'ca');
       };
@@ -234,9 +284,9 @@
   function modal({ icon = '', title = '', html = '', stars = null, buttons = [{ label: 'D\'acord', value: 'ok' }] }) {
     return new Promise((res) => {
       const bg = U.h(`<div class="modal-bg"><div class="modal">
-        <div class="modal-icon">${icon}</div><h2>${title}</h2>
+        <div class="modal-icon">${icon}</div><h2>${t(title)}</h2>
         ${stars === null ? '' : '<div class="stars"><span>⭐</span><span>⭐</span><span>⭐</span></div>'}
-        <div class="modal-html">${html}</div><div class="modal-btns"></div></div></div>`);
+        <div class="modal-html">${t(html)}</div><div class="modal-btns"></div></div></div>`);
       const btns = bg.querySelector('.modal-btns');
       buttons.forEach((b) => {
         const el = U.h(`<button class="btn ${b.cls || ''}">${b.label}</button>`);
@@ -267,7 +317,7 @@
     }
   }
   function floatMsg(text, color) {
-    const m = U.h(`<div class="float-msg">${text}</div>`);
+    const m = U.h(`<div class="float-msg">${t(text)}</div>`);
     if (color) m.style.color = color;
     document.body.appendChild(m);
     setTimeout(() => m.remove(), 1400);
@@ -454,5 +504,5 @@
   // Estrelles segons errors
   const starsFor = (mistakes, n) => (mistakes <= Math.max(1, n * 0.15) ? 3 : mistakes <= Math.max(3, n * 0.4) ? 2 : 1);
 
-  window.Eloi = { U, store, sfx, say, stopSay, topbar, setBack, story, modal, confetti, floatMsg, keypad, choices, spell, quiz, starsFor, unlockAudio: ac };
+  window.Eloi = { U, store, nom, nena, el, de, t, perfil, demanaPerfil, sfx, say, stopSay, topbar, setBack, story, modal, confetti, floatMsg, keypad, choices, spell, quiz, starsFor, unlockAudio: ac };
 })();

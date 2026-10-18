@@ -1,0 +1,75 @@
+/* Estils del motor de missions (comu/missio.js). Cada joc defineix el fons i --accent. */
+:root { --accent: #7b2ff7; }
+#app { min-height: 100vh; }
+
+/* ---- Mapa (camí de nivells) ---- */
+.mmap { padding: 70px 16px 40px; max-width: 640px; margin: 0 auto; text-align: center; }
+.mmap h1 { margin: 0; font-size: clamp(1.8rem, 7vw, 2.6rem); text-shadow: 0 4px 0 rgba(0,0,0,.25); }
+.mm-sub { font-size: 1.2rem; margin: 4px 0 10px; }
+.album { background: rgba(255,255,255,.2); border-radius: 26px; padding: 6px 14px; font-size: 1.5rem; display: inline-flex; flex-wrap: wrap; justify-content: center; gap: 2px; margin-bottom: 18px; box-shadow: 0 4px 0 rgba(0,0,0,.15); }
+.album span.off { filter: grayscale(1) opacity(.45); }
+.path { display: flex; flex-direction: column; gap: 14px; position: relative; }
+.path::before { content: ''; position: absolute; left: 50%; top: 30px; bottom: 30px; border-left: 6px dotted rgba(255,255,255,.45); }
+.stone { position: relative; display: flex; align-items: center; gap: 12px; background: #fff; color: var(--ink); border-radius: 26px; padding: 10px 14px; width: 86%; text-align: left; box-shadow: 0 6px 0 rgba(0,0,0,.2); transition: transform .15s; }
+.stone:nth-child(odd) { align-self: flex-start; }
+.stone:nth-child(even) { align-self: flex-end; }
+.stone:active { transform: translateY(3px); }
+.st-orb { position: relative; flex: none; width: 66px; height: 66px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2.3rem; background: radial-gradient(circle at 32% 30%, #fff, var(--accent)); box-shadow: inset -5px -6px 0 rgba(0,0,0,.15); }
+.st-txt { display: flex; flex-direction: column; line-height: 1.2; }
+.st-txt b { font-size: 1.2rem; }
+.st-txt small { font-size: .95rem; opacity: .7; }
+.stone.locked { opacity: .55; }
+.stone.locked .st-orb { filter: grayscale(1); }
+.stone.locked .st-orb::after { content: '🔒'; position: absolute; right: -6px; bottom: -6px; font-size: 1.4rem; }
+.stone.next { box-shadow: 0 0 0 4px var(--gold), 0 6px 0 rgba(0,0,0,.2); animation: pulse 1.6s infinite; }
+.stone.boss { background: linear-gradient(135deg, #fff6d6, #ffd23f); }
+.st-here { position: absolute; top: -30px; font-size: 1.8rem; animation: bob 1s infinite; }
+.mm-btns { margin-top: 26px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+.album-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)); gap: 10px; max-height: 55vh; overflow: auto; }
+.al-it { background: #f3ecff; border-radius: 16px; padding: 8px; display: flex; flex-direction: column; align-items: center; line-height: 1.2; }
+.al-it span { font-size: 2.6rem; }
+.al-it small { font-size: .85rem; opacity: .75; }
+.al-it.off { filter: grayscale(1); opacity: .5; }
+.unlock { display: flex; align-items: center; gap: 12px; background: #f3ecff; border-radius: 18px; padding: 10px 14px; text-align: left; margin: 8px 0; animation: pop .5s .6s both; }
+.unlock .un-e { font-size: 3.4rem; animation: bob 1.4s infinite; }
+.unlock div:last-child { display: flex; flex-direction: column; line-height: 1.25; }
+.unlock small { color: #7b2ff7; font-weight: 700; }
+.unlock b { font-size: 1.3rem; }
+
+/* ---- Pantalla de joc ---- */
+.play { padding: 70px 14px 20px; max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 12px; min-height: 100vh; }
+.play-head { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+.play-head .ptitle { font-size: 1.35rem; font-weight: 700; }
+.dots { display: flex; gap: 5px; }
+.dots span { width: 26px; height: 26px; border-radius: 50%; background: rgba(255,255,255,.2); display: flex; align-items: center; justify-content: center; font-size: .85rem; }
+.dots span.cur { background: rgba(255,255,255,.45); box-shadow: 0 0 0 3px #fff; }
+.guide { display: flex; align-items: center; gap: 8px; }
+.guide .gchar { font-size: 3rem; flex: none; animation: bob 2s infinite; line-height: 1; }
+.guide .gchar svg { width: 60px; height: auto; display: block; }
+.guide .gbubble { flex: 1; background: var(--paper); color: var(--ink); border-radius: 20px; padding: 10px 14px; font-size: 1.2rem; line-height: 1.35; position: relative; }
+.guide .gbubble::before { content: ''; position: absolute; left: -12px; top: 50%; margin-top: -12px; border: 12px solid transparent; border-right-color: var(--paper); border-left: 0; }
+.guide .gbtns { display: flex; flex-direction: column; gap: 6px; }
+.area { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 16px; padding: 4px 0; }
+.foot { text-align: center; min-height: 76px; }
+@media (max-width: 500px) {
+  .guide .gchar { font-size: 2.4rem; } .guide .gchar svg { width: 46px; }
+  .guide .gbubble { font-size: 1.05rem; }
+  .dots span { width: 22px; height: 22px; }
+}
+.big-q { font-size: clamp(2.6rem, 12vw, 4.4rem); font-weight: 700; text-shadow: 0 5px 0 rgba(0,0,0,.3); line-height: 1.1; text-align: center; }
+.big-q .hole-n { display: inline-block; min-width: 1.4em; border-bottom: 6px solid var(--gold); color: var(--gold); }
+.solution { background: #b9f6ca; color: #0b4d26; border-radius: 16px; padding: 8px 18px; font-size: 1.4rem; font-weight: 600; text-align: center; animation: pop .4s both; }
+.choices.nums .choice { font-size: 2rem; }
+.choices.nums { grid-template-columns: repeat(2, 1fr); max-width: 420px; }
+
+/* ---- Repte final ---- */
+.boss-bar { display: flex; align-items: center; justify-content: space-between; gap: 8px; background: rgba(0,0,0,.25); border-radius: 22px; padding: 8px 12px; }
+.boss-side { display: flex; align-items: center; gap: 8px; min-width: 0; }
+.boss-side .who { font-size: 2.6rem; line-height: 1; }
+.boss-side .who svg { width: 54px; height: auto; display: block; }
+.hp { width: 110px; height: 14px; background: rgba(255,255,255,.2); border-radius: 9px; overflow: hidden; }
+.hp i { display: block; height: 100%; background: linear-gradient(90deg, #ff5a5f, #ffb347); transition: width .4s; }
+.lives { font-size: 1.2rem; white-space: nowrap; }
+.lives span.off { filter: grayscale(1) opacity(.25); }
+.hit { animation: shake .45s, flash .45s; }
+@keyframes flash { 50% { filter: brightness(2.5) drop-shadow(0 0 12px #fff); } }

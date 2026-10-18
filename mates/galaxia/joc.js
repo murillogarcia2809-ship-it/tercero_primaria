@@ -4,7 +4,7 @@
   const { U, sfx, say, stopSay, story, modal, confetti, floatMsg, keypad, choices, quiz, store, starsFor } = Eloi;
   const { numCat, comprovaText, DICCIONARI, UNI, DES, fins100, trossos, errades, erradesText } = NombresCa;
 
-  const PLAYER = 'Eloi';
+  const PLAYER = Eloi.nom();
   const SAVE = 'galaxia';
   const app = document.getElementById('app');
   let guide = () => Promise.resolve(); // missatge d'en Bit a la pantalla actual
@@ -119,7 +119,7 @@
     {
       id: 'abac', name: 'Planeta Àbac', emoji: '🧮', c1: '#ffb199', c2: '#ff0844', skill: 'Descompondre',
       intro: [
-        { who: BIT, name: 'Bit', text: 'Benvingut al <b>Planeta Àbac</b>! Aquí cada xifra viu a la seva casa. 🏠' },
+        { who: BIT, name: 'Bit', text: '{Benvingut|Benvinguda} al <b>Planeta Àbac</b>! Aquí cada xifra viu a la seva casa. 🏠' },
         { who: BIT, name: 'Bit', text: `Les cases són: ${chip(COLS[4], 'U')} unitats, ${chip(COLS[3], 'D')} desenes, ${chip(COLS[2], 'C')} centenes, ${chip(COLS[1], 'UM')} unitats de miler i ${chip(COLS[0], 'DM')} desenes de miler.` },
         { who: BIT, name: 'Bit', text: `Mira: <b>${U.fmt(ex)}</b> = ${unitChips(ex)} i 0 C.<br>És a dir: ${valChips(ex)}. Cada xifra al seu lloc!` },
       ],
@@ -137,7 +137,7 @@
     {
       id: 'petita', name: 'Lluna Petita', emoji: '🌙', c1: '#fff59d', c2: '#f9a825', skill: 'Lletres fins al 99',
       intro: [
-        { who: BIT, name: 'Bit', text: 'Benvingut a la <b>Lluna Petita</b>! 🌙 Aquí aprendrem a escriure els números en lletres, pas a pas. Comencem pels petits!' },
+        { who: BIT, name: 'Bit', text: '{Benvingut|Benvinguda} a la <b>Lluna Petita</b>! 🌙 Aquí aprendrem a escriure els números en lletres, pas a pas. Comencem pels petits!' },
         { who: BIT, name: 'Bit', text: `Del 0 al 20, cada número té el seu <b>nom propi</b>, i te l'has d'aprendre:<br><i>u, dos, tres, quatre, cinc, sis, set, vuit, nou, deu, onze, dotze, tretze, catorze, quinze, setze, disset, divuit, dinou, vint</i>.` },
         { who: BIT, name: 'Bit', text: `Les <b>desenes</b> també tenen nom:<br><i>deu, vint, trenta, quaranta, cinquanta, seixanta, setanta, vuitanta, noranta</i>.` },
         { who: BIT, name: 'Bit', text: `Per fer els altres, ajuntem la <b>desena</b> i la <b>unitat</b> amb un guionet:<br>${tchip('r', 'quaranta')} + <b>-</b> + ${tchip('r', 'cinc')} = <b>quaranta-cinc</b> (45)` },
@@ -590,7 +590,7 @@
 
   function introStory() {
     return story([
-      { who: BIT, name: 'Bit', text: `Hola, Capità <b>${PLAYER}</b>! Sóc en <b>Bit</b>, el robot de la teva nau espacial. 🚀` },
+      { who: BIT, name: 'Bit', text: `Hola, {Capità|Capitana} <b>${PLAYER}</b>! Sóc en <b>Bit</b>, el robot de la teva nau espacial. 🚀` },
       { who: BIT, name: 'Bit', text: 'Tenim un problema GRAN: el malvat <b>Capità Zero</b> ha robat els números de la galàxia! Sense números, les naus es perden i els planetes s\'apaguen.' },
       { who: ZERO, name: 'Capità Zero', text: 'Ha, ha, ha! Ara tots els números són meus! Ningú no sabrà descompondre\'ls ni escriure\'ls mai més! 🏴‍☠️' },
       { who: BIT, name: 'Bit', text: `Hem de visitar ${PLANETS.length} planetes i llunes i guanyar els seus <b>cristalls</b> 💎. Amb tots els cristalls, el nostre làser podrà vèncer el Capità Zero!` },
@@ -635,7 +635,7 @@
   }
 
   // ---------- Joc d'un planeta ----------
-  const PRAISE = ['Molt bé!', 'Genial!', 'Fantàstic!', 'Ets un crac!', 'Perfecte!', 'Increïble!', 'Bravo!', 'Molt ben fet!'];
+  const PRAISE = ['Molt bé!', 'Genial!', 'Fantàstic!', 'Quin crac!', 'Perfecte!', 'Increïble!', 'Bravo!', 'Molt ben fet!'];
   const EMO = ['🎉', '⭐', '🚀', '💥', '🌟', '👏', '🤩'];
 
   function playScreen(title, extraHead = '') {
@@ -650,7 +650,7 @@
     let current = '';
     const setGuide = (html, speak = true) => {
       current = html;
-      bubble.innerHTML = html;
+      bubble.innerHTML = Eloi.t(html);
       bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop');
       return speak ? say(html) : Promise.resolve();
     };
@@ -718,7 +718,7 @@
   async function playBoss() {
     Eloi.setBack(showMap);
     await story([
-      { who: ZERO, name: 'Capità Zero', text: `Ha, ha, ha! Així que tu ets el Capità <b>${PLAYER}</b>... No podràs amb mi! Tots els números són MEUS!` },
+      { who: ZERO, name: 'Capità Zero', text: `Ha, ha, ha! Així que tu ets {el Capità|la Capitana} <b>${PLAYER}</b>... No podràs amb mi! Tots els números són MEUS!` },
       { who: BIT, name: 'Bit', text: 'Cada resposta correcta dispara el nostre làser 💥. Si t\'equivoques, perdem un escut 🛡️. Tenim 3 escuts i només un intent per pregunta. Concentra\'t!', btn: 'A la batalla! ⚔️' },
     ]);
     const HPMAX = 8;
@@ -755,7 +755,7 @@
       sfx.win(); confetti(200);
       await story([
         { who: ZERO, name: 'Capità Zero', text: 'Noooo! Els meus zeros! Com pot ser que un Capità tan jove sàpiga tant de números?! 😵' },
-        { who: BIT, name: 'Bit', text: `Ho has aconseguit, Capità <b>${PLAYER}</b>! Els números tornen a brillar a tota la galàxia! ✨` },
+        { who: BIT, name: 'Bit', text: `Ho has aconseguit, {Capità|Capitana} <b>${PLAYER}</b>! Els números tornen a brillar a tota la galàxia! ✨` },
         { who: BIT, name: 'Bit', text: 'Com a recompensa, la Federació Galàctica t\'ha preparat un diploma especial. 🏅', btn: 'Veure el diploma 🏅' },
       ]);
       const p = prog();
@@ -782,7 +782,7 @@
       <div style="font-size:4rem">🏅</div>
       <h1>DIPLOMA</h1>
       <p style="font-size:1.3rem">La Federació Galàctica atorga el títol de</p>
-      <p style="font-size:1.8rem;font-weight:700">Capità dels Números</p>
+      <p style="font-size:1.8rem;font-weight:700">${Eloi.t('{Capità|Capitana}')} dels Números</p>
       <p>a</p><div class="name">${PLAYER}</div>
       <p style="font-size:1.15rem">per haver derrotat el Capità Zero i salvat la Galàxia Numèrica,<br>dominant les DM, UM, C, D i U.</p>
       <p style="font-size:1.6rem">⭐ ${totalStars(p)} estrelles &nbsp; 💎 ${PLANETS.length} cristalls</p>

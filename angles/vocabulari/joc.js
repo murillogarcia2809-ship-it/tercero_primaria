@@ -3,7 +3,7 @@
   'use strict';
   const { U, sfx, say, stopSay, story, modal, confetti, floatMsg, choices, spell, quiz, store, starsFor } = Eloi;
   const ILLES = window.ILLES;
-  const PLAYER = 'Eloi';
+  const PLAYER = Eloi.nom();
   const SAVE = 'illa';
   const POLLY = '🦜';
   const app = document.getElementById('app');
@@ -137,7 +137,7 @@
     let cur = '', curLang = 'ca';
     const setGuide = (html, lang = 'ca', speak = true) => {
       cur = html; curLang = lang;
-      bubble.innerHTML = html;
+      bubble.innerHTML = Eloi.t(html);
       bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop');
       return speak ? say(html, lang) : Promise.resolve();
     };

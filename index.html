@@ -3,11 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Els jocs de l'Eloi · 3r</title>
+<title>Els meus jocs · 3r</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
 <link rel="stylesheet" href="comu/comu.css">
+<script src="comu/comu.js"></script>
 <style>
   body { background: linear-gradient(160deg, #ff9a8b 0%, #ff6a88 30%, #a855f7 70%, #4f46e5 100%); }
   .portal { max-width: 1050px; margin: 0 auto; padding: 40px 16px 50px; text-align: center; }
@@ -28,19 +29,33 @@
   .game .score { font-weight: 600; color: #7b2ff7; }
   .game.soon { opacity: .6; pointer-events: none; }
   footer { margin-top: 40px; opacity: .8; font-size: .95rem; }
+  .who-btn { background: rgba(255,255,255,.2); border-radius: 999px; padding: 6px 16px; font-size: 1rem; margin: -18px 0 20px; }
 </style>
 </head>
 <body>
 <div class="portal">
   <div style="font-size:4rem">🎒</div>
-  <h1>Els jocs de l'Eloi</h1>
+  <h1 id="titol">Els meus jocs</h1>
   <p class="sub">3r de Primària · Tria un joc i comença l'aventura!</p>
+  <button class="who-btn hidden" id="canvia"></button>
 
   <div class="subject">🔢 Matemàtiques</div>
   <div class="games">
     <a class="game" href="mates/galaxia/index.html" style="--bg:linear-gradient(135deg,#10153a,#3a1c71)">
       <div class="top"><span>🚀</span></div>
       <div class="body"><h3>Missió Galàxia Numèrica</h3><p>Descompon números (DM, UM, C, D, U) i escriu-los en lletres per vèncer el Capità Zero.</p><div class="score" data-game="galaxia"></div></div>
+    </a>
+    <a class="game" href="mates/taules/index.html" style="--bg:linear-gradient(135deg,#2bc0e4,#3a7bd5)">
+      <div class="top"><span>🥚</span></div>
+      <div class="body"><h3>L'Incubadora del Doctor Per</h3><p>Aprèn les taules de multiplicar i fes néixer 9 monstres per a la teva col·lecció.</p><div class="score" data-game="taules"></div></div>
+    </a>
+    <a class="game" href="mates/series/index.html" style="--bg:linear-gradient(135deg,#56ab2f,#0f9b8e)">
+      <div class="top"><span>🐸</span></div>
+      <div class="body"><h3>Els Salts de la Granota Rita</h3><p>Completa sèries sumant i restant i ajuda la Rita a creuar l'estany saltant de nenúfar en nenúfar.</p><div class="score" data-game="series"></div></div>
+    </a>
+    <a class="game" href="mates/cardinals/index.html" style="--bg:linear-gradient(135deg,#614385,#516395)">
+      <div class="top"><span>🕵️</span></div>
+      <div class="body"><h3>El Detectiu Lupa i els Números Perduts</h3><p>Llegeix, compara i ordena números cardinals per resoldre els casos més misteriosos.</p><div class="score" data-game="cardinals"></div></div>
     </a>
   </div>
 
@@ -64,9 +79,21 @@
     </a>
   </div>
 
-  <footer>Fet amb ❤️ per a l'Eloi</footer>
+  <footer id="peu">Fet amb ❤️</footer>
 </div>
 <script>
+  // Títol amb el nom del jugador
+  (function () {
+    if (!Eloi.perfil()) return;
+    const t = Eloi.t('Els jocs {de}');
+    document.getElementById('titol').textContent = t;
+    document.title = t + ' · 3r';
+    document.getElementById('peu').textContent = Eloi.t('Fet amb ❤️ per a {el}');
+    const b = document.getElementById('canvia');
+    b.textContent = Eloi.t('✏️ No ets {el}? Canvia el nom');
+    b.onclick = () => Eloi.demanaPerfil({ canviar: true });
+    b.classList.remove('hidden');
+  })();
   // Mostra les estrelles guanyades a cada joc
   (function () {
     let d = {};
@@ -77,10 +104,14 @@
       illa: Object.values((d.illa || {}).isl || {}).reduce((a, o) => a + sum(o), 0),
       monstre: sum((d.monstre || {}).lv),
       cos: sum((d.cos || {}).lv),
+      taules: sum((d.taules || {}).lv),
+      series: sum((d.series || {}).lv),
+      cardinals: sum((d.cardinals || {}).lv),
     };
+    const dipl = d.diplomes || {};
     document.querySelectorAll('.score').forEach((el) => {
       const s = stars[el.dataset.game] || 0;
-      el.textContent = s ? `⭐ ${s} estrelles` : '✨ Nou!';
+      el.textContent = (s ? `⭐ ${s} estrelles` : '✨ Nou!') + (dipl[el.dataset.game] ? ' · 🏅 Diploma' : '');
     });
   })();
 </script>

@@ -3,7 +3,7 @@
   'use strict';
   const { U, sfx, say, stopSay, story, modal, confetti, floatMsg, choices, spell, quiz, store, starsFor } = Eloi;
   const { FIG, SETS, SPELL, ART_INFO, Q, SENTITS, SITUACIONS, FETS, CARDS, FUNCIONS_SIT, ORDRE } = COS;
-  const PLAYER = 'Eloi';
+  const PLAYER = Eloi.nom();
   const SAVE = 'cos';
   const app = document.getElementById('app');
 
@@ -49,7 +49,7 @@
     { sec: '🏆 Repte final', id: 'final', e: '🏆', n: 'Gran repte final', d: 'Tots els aparells barrejats!', play: () => runLevel(lv('final'), genFinal()) },
   ];
   const lv = (id) => LEVELS.find((l) => l.id === id);
-  const PRAISE = ['Molt bé!', 'Genial!', 'Fantàstic!', 'Ets un crac!', 'Perfecte!', 'Increïble!', 'Boníssim!'];
+  const PRAISE = ['Molt bé!', 'Genial!', 'Fantàstic!', 'Quin crac!', 'Perfecte!', 'Increïble!', 'Boníssim!'];
 
   const prog = () => store.get(SAVE, { intro: false, lv: {} });
   const saveProg = (p) => store.set(SAVE, p);
@@ -122,7 +122,7 @@
       { who: OSSI, name: 'Ossi', text: `Hola, <b>${PLAYER}</b>! Sóc l'<b>Ossi</b>, l'esquelet del laboratori de l'escola. 🦴` },
       { who: OSSI, name: 'Ossi', text: 'Cada nit, quan tothom se\'n va, faig una mica de gresca… i l\'endemà no recordo com es diu cada part del cos! 😅' },
       { who: OSSI, name: 'Ossi', text: 'M\'ajudes a aprendre com és el <b>cos humà</b>? Primer repassarem les parts del cos i després descobrirem què hi ha a dins: els <b>aparells</b> que fan les funcions vitals.' },
-      { who: OSSI, name: 'Ossi', text: 'A cada repte, primer <b>explorarem</b> i després et faré preguntes. Som-hi, doctor Eloi!', btn: 'Som-hi! 🩺' },
+      { who: OSSI, name: 'Ossi', text: 'A cada repte, primer <b>explorarem</b> i després et faré preguntes. Som-hi, {doctor|doctora} {nom}!', btn: 'Som-hi! 🩺' },
     ]);
   }
 
@@ -169,7 +169,7 @@
     const v = await modal({
       icon: '🦴', title: 'Repte superat!', stars,
       html: `<p>💡 <b>Sabies que…</b> ${FETS[l.id]}</p>` +
-        (all && l.id === 'final' ? `<p>Ja ets un expert del cos humà, ${PLAYER}! L'Ossi et nomena <b>doctor del laboratori</b>! 🩺</p>` : ''),
+        (all && l.id === 'final' ? `<p>Ja ets {un expert|una experta} del cos humà, ${PLAYER}! L'Ossi et nomena <b>{doctor|doctora} del laboratori</b>! 🩺</p>` : ''),
       buttons: [{ label: '🔁 Repetir', value: 'again', cls: 'blue' }, { label: 'Continua ▶', value: 'ok' }],
     });
     if (v === 'again') l.play(l); else showLevels();
@@ -186,7 +186,7 @@
     let cur = '';
     const setGuide = (html, speak = true) => {
       cur = html;
-      bubble.innerHTML = html;
+      bubble.innerHTML = Eloi.t(html);
       bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop');
       return speak ? say(html, 'ca') : Promise.resolve();
     };

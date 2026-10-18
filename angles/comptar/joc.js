@@ -2,7 +2,7 @@
 (function () {
   'use strict';
   const { U, sfx, say, stopSay, story, modal, confetti, floatMsg, choices, spell, quiz, store, starsFor } = Eloi;
-  const PLAYER = 'Eloi';
+  const PLAYER = Eloi.nom();
   const SAVE = 'monstre';
   const app = document.getElementById('app');
 
@@ -133,7 +133,7 @@
     let cur = '';
     const setGuide = (html, speak = true) => {
       cur = html;
-      bubble.innerHTML = html;
+      bubble.innerHTML = Eloi.t(html);
       bubble.classList.remove('pop'); void bubble.offsetWidth; bubble.classList.add('pop');
       return speak ? say(html, 'ca') : Promise.resolve();
     };

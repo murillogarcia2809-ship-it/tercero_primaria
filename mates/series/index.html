@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Els Salts de la Granota Rita</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐸</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../comu/comu.css">
+<link rel="stylesheet" href="../../comu/missio.css">
+<style>
+  :root { --accent: #2ecc71; }
+  body { background: linear-gradient(180deg, #7fdbda 0%, #2a9d8f 45%, #1d6f63 100%); background-attachment: fixed; }
+  .rita { position: relative; display: inline-block; }
+  .rita .hat { position: absolute; left: 50%; top: -.42em; transform: translateX(-50%) rotate(-8deg); font-size: .62em; }
+
+  /* l'estany */
+  .pond { position: relative; display: flex; flex-wrap: wrap; justify-content: center; gap: 18px 14px; padding: 46px 10px 14px; background: radial-gradient(ellipse at 50% 40%, rgba(255,255,255,.18), rgba(0,0,0,.12)); border-radius: 30px; width: 100%; max-width: 620px; }
+  .pad { position: relative; width: 62px; height: 62px; border-radius: 50%; background: radial-gradient(circle at 35% 30%, #a8e063, #3d9b35 70%); box-shadow: inset -4px -6px 0 rgba(0,0,0,.18), 0 4px 0 rgba(0,0,0,.15); display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 700; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.35); }
+  .pad::after { content: ''; position: absolute; right: 8px; top: 50%; width: 22px; height: 6px; background: #1d6f63; transform: rotate(-30deg); border-radius: 3px; opacity: .45; }
+  .pad span { position: relative; z-index: 1; }
+  .pond.big .pad { width: 66px; height: 66px; font-size: 1.35rem; }
+  .pad.gap { background: radial-gradient(circle, rgba(255,255,255,.25), rgba(255,255,255,.08)); border: 3px dashed var(--gold); color: var(--gold); animation: pulse 1.2s infinite; box-shadow: none; }
+  .pad.gap::after { display: none; }
+  .pad.cur { border-style: solid; box-shadow: 0 0 0 4px var(--gold); }
+  .pad.ok { background: radial-gradient(circle at 35% 30%, #fff59d, #f9a825 70%); animation: pop .4s; }
+  .pad.shown { background: radial-gradient(circle at 35% 30%, #b9f6ca, #2ecc71 70%); border: none; animation: none; }
+  .rl { position: absolute; top: -26px; left: -22px; font-style: normal; font-size: .95rem; background: #fff; color: #1d6f63; border-radius: 999px; padding: 0 6px; text-shadow: none; z-index: 2; transition: opacity .3s; white-space: nowrap; }
+  .rl.hid { opacity: 0; }
+  .frog { position: absolute; z-index: 3; font-size: 2.2rem; transform: translate(-50%, -78%); transition: left .3s ease-in-out, top .3s ease-in-out; pointer-events: none; }
+  .frog.jump .rita { animation: jump .32s ease-out; }
+  @keyframes jump { 50% { transform: translateY(-26px) rotate(-10deg); } }
+  @media (max-width: 500px) {
+    .pond { gap: 18px 10px; padding: 44px 6px 12px; }
+    .pad { width: 54px; height: 54px; font-size: 1.4rem; }
+    .pond.big .pad { width: 58px; height: 58px; font-size: 1.15rem; }
+    .rl { font-size: .85rem; left: -19px; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../../comu/comu.js"></script>
+<script src="../../comu/premi.js"></script>
+<script src="../../comu/missio.js"></script>
+<script src="joc.js"></script>
+</body>
+</html>

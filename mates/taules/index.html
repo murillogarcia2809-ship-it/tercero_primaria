@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="ca">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>L'Incubadora del Doctor Per</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🥚</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap">
+<link rel="stylesheet" href="../../comu/comu.css">
+<link rel="stylesheet" href="../../comu/missio.css">
+<style>
+  :root { --accent: #ff9f43; }
+  body { background: radial-gradient(circle at 50% 0%, #2bc0e4 0%, #3a7bd5 45%, #2c1e6b 100%); background-attachment: fixed; }
+
+  /* aprendre la taula */
+  .mira { display: flex; flex-direction: column; align-items: center; gap: 10px; width: 100%; max-width: 460px; }
+  .egg-btn { font-size: 4.4rem; background: none; line-height: 1; display: flex; flex-direction: column; align-items: center; filter: drop-shadow(0 6px 8px rgba(0,0,0,.3)); }
+  .egg-btn small { font-size: 1rem; font-weight: 700; background: var(--gold); color: #4a2a00; border-radius: 999px; padding: 2px 12px; margin-top: 2px; }
+  .egg-btn.wob { animation: wob .4s; }
+  @keyframes wob { 25% { transform: rotate(-14deg); } 75% { transform: rotate(14deg); } }
+  .taula { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; width: 100%; }
+  .t-row { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,.12); color: rgba(255,255,255,.25); border-radius: 14px; padding: 6px 12px; font-size: 1.3rem; font-weight: 600; }
+  .t-row b { color: transparent; }
+  .t-row.on { background: #fff; color: var(--ink); box-shadow: 0 4px 0 #a9aec9; }
+  .t-row.on b { color: #e67e22; }
+
+  /* comptar de n en n */
+  .skip-line { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 4px; font-size: clamp(1.6rem, 7vw, 2.4rem); font-weight: 700; }
+  .skip-line span { background: #fff; color: var(--ink); border-radius: 50%; width: 1.9em; height: 1.9em; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 0 #a9aec9; }
+  .skip-line span.gap { background: var(--gold); color: #4a2a00; animation: pulse 1.2s infinite; }
+  .skip-line span.gap.ok { background: #b9f6ca; animation: pop .4s; }
+  .skip-line i { font-style: normal; font-size: .6em; opacity: .8; }
+
+  /* grups */
+  .grups { display: flex; flex-wrap: wrap; justify-content: center; gap: 10px; max-width: 520px; }
+  .plat { background: radial-gradient(#fff 55%, #dfe6f0 56%); border-radius: 50%; width: 92px; height: 92px; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; align-content: center; font-size: 1.05rem; padding: 12px; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
+  .q-txt { font-size: 1.3rem; text-align: center; line-height: 1.45; }
+  .q-txt .suma { font-size: 1.15rem; opacity: .9; }
+  .problema { background: rgba(255,255,255,.12); border-radius: 22px; padding: 10px 14px; max-width: 560px; }
+  .pb-pic { font-size: 2rem; text-align: center; letter-spacing: .1em; }
+  @media (max-width: 500px) {
+    .plat { width: 78px; height: 78px; font-size: .9rem; padding: 10px; }
+    .t-row { font-size: 1.1rem; padding: 5px 10px; }
+    .egg-btn { font-size: 3.6rem; }
+    .q-txt { font-size: 1.15rem; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script src="../../comu/comu.js"></script>
+<script src="../../comu/premi.js"></script>
+<script src="../../comu/missio.js"></script>
+<script src="joc.js"></script>
+</body>
+</html>
