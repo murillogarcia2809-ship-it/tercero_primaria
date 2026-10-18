@@ -7,6 +7,11 @@
      diploma(opts), jocRegal(onDone)  → per obrir-los des d'un botó del mapa */
 (function () {
   'use strict';
+  // Si el navegador ha barrejat un comu.js antic (memòria cau) amb fitxers nous, recarreguem una vegada
+  if (typeof Eloi.nom !== 'function') {
+    try { if (!sessionStorage.getItem('recarrega')) { sessionStorage.setItem('recarrega', '1'); location.replace(location.pathname + '?r=' + Date.now()); } } catch (e) { /* res */ }
+    return;
+  }
   const { U, sfx, say, stopSay, store, confetti, modal } = Eloi;
   const PLAYER = Eloi.nom();
 

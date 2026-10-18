@@ -3,6 +3,7 @@
    números grans, endevinalles i ordinals. A cada cas es guanya una pista per a la col·lecció. */
 (function () {
   'use strict';
+  if (!Eloi.missio) return; // fitxers comuns antics: missio.js ja recarrega la pàgina
   const { U, sfx, say, keypad, choices } = Eloi;
   const { numCat, erradesText } = NombresCa;
 

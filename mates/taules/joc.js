@@ -2,6 +2,7 @@
    Cada taula és un ou de monstre: quan la superes, l'ou es trenca i neix un monstre per a la col·lecció. */
 (function () {
   'use strict';
+  if (!Eloi.missio) return; // fitxers comuns antics: missio.js ja recarrega la pàgina
   const { U, sfx, say, keypad, choices } = Eloi;
 
   const PER = '🧑‍🔬';

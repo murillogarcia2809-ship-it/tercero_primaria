@@ -13,6 +13,11 @@
    G (per als renderers) = {setGuide, say}. Un renderer pot posar R.speaks = true si ja parla en encertar. */
 (function () {
   'use strict';
+  // Si el navegador ha barrejat un comu.js antic (memòria cau) amb fitxers nous, recarreguem una vegada
+  if (typeof Eloi.nom !== 'function') {
+    try { if (!sessionStorage.getItem('recarrega')) { sessionStorage.setItem('recarrega', '1'); location.replace(location.pathname + '?r=' + Date.now()); } } catch (e) { /* res */ }
+    return;
+  }
   const { U, sfx, say, stopSay, story, floatMsg, quiz, store, starsFor, confetti } = Eloi;
   const PLAYER = Eloi.nom();
   const PRAISE = ['Molt bé!', 'Genial!', 'Fantàstic!', 'Quin crac!', 'Perfecte!', 'Increïble!', 'Bravo!', 'Molt ben fet!', 'Boníssim!', 'Uau!'];
